@@ -1,1 +1,341 @@
-/* You can add global styles to this file, and also import other style files */
+// Global Code a Cuisine design tokens.
+// Kept in this file to follow the structure defined in Struktur.readme.
+
+:root {
+  // Core palette
+  --color-green-900: #10310b;
+  --color-green-800: #1e5515;
+  --color-green-700: #396039;
+  --color-green-600: #045e04;
+  --color-sage-400: #c4d0c4;
+  --color-sage-300: #d7dfd7;
+  --color-sage-200: #dbe3db;
+  --color-sage-150: #dbe0db;
+  --color-sage-100: #ecf0ec;
+  --color-cream-300: #fae0c6;
+  --color-cream-200: #efeadf;
+  --color-cream-100: #faf0e6;
+  --color-cream-050: #fcf5ee;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  // Semantic colors
+  --color-brand: var(--color-green-700);
+  --color-brand-hover: var(--color-green-800);
+  --color-brand-active: var(--color-green-600);
+  --color-text: var(--color-green-900);
+  --color-text-inverse: var(--color-cream-100);
+  --color-page: var(--color-white);
+  --color-page-tinted: var(--color-cream-050);
+  --color-panel: var(--color-sage-400);
+  --color-panel-subtle: var(--color-sage-100);
+  --color-control: var(--color-cream-200);
+  --color-control-hover: var(--color-cream-100);
+  --color-accent-warm: var(--color-cream-300);
+  --color-border: var(--color-sage-150);
+  --color-disabled: var(--color-sage-200);
+  --color-focus-ring: var(--color-green-600);
+
+  // Typography
+  --font-family-base: 'Figtree', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-size-xs: 0.875rem;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.5rem;
+  --font-size-4xl: 3.5rem;
+  --font-size-hero: 5rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.1;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --line-height-relaxed: 1.65;
+
+  // Spacing
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  // Shape and elevation
+  --radius-none: 0;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-pill: 999rem;
+  --shadow-soft: 0 0.25rem 1rem rgb(16 49 11 / 8%);
+  --shadow-dialog: 0 1rem 3rem rgb(16 49 11 / 16%);
+
+  // Layout and controls
+  --content-max-width: 120rem;
+  --content-readable-width: 72rem;
+  --page-padding: clamp(1rem, 4.45vw, 4rem);
+  --control-height-sm: 2.5rem;
+  --control-height-md: 3rem;
+  --touch-target-min: 2.75rem;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --easing-standard: ease;
+
+  // Reusable button system
+  --button-height: 3.75rem;
+  --button-height-compact: 2.75rem;
+  --button-padding-inline: 1.75rem;
+  --button-gap: 0.75rem;
+  --button-font-size: var(--font-size-md);
+  --button-font-weight: var(--font-weight-medium);
+  --button-border-width: 0.0625rem;
+  --button-radius: var(--radius-none);
+  --button-primary-background: var(--color-brand);
+  --button-primary-background-hover: var(--color-green-600);
+  --button-primary-background-active: var(--color-green-800);
+  --button-primary-color: var(--color-text-inverse);
+  --button-cream-background: var(--color-cream-100);
+  --button-cream-background-hover: var(--color-cream-300);
+  --button-cream-background-active: var(--color-cream-200);
+  --button-cream-color: var(--color-green-600);
+  --button-secondary-background: var(--color-sage-100);
+  --button-secondary-background-hover: var(--color-sage-200);
+  --button-disabled-opacity: 0.42;
+
+  color: var(--color-text);
+  background: var(--color-page);
+  font-family: var(--font-family-base);
+  font-size: 100%;
+  font-synthesis: none;
+  line-height: var(--line-height-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 20rem;
+  min-height: 100%;
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--color-text);
+  background: var(--color-page);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  margin-block: 0;
+}
+
+:focus-visible {
+  outline: 0.1875rem solid var(--color-focus-ring);
+  outline-offset: 0.1875rem;
+}
+
+::selection {
+  color: var(--color-text-inverse);
+  background: var(--color-brand);
+}
+
+.page-container {
+  width: min(100%, var(--content-max-width));
+  margin-inline: auto;
+  padding-inline: var(--page-padding);
+}
+
+.app-button {
+  display: inline-flex;
+  min-height: var(--button-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-gap);
+  padding-inline: var(--button-padding-inline);
+  border: var(--button-border-width) solid transparent;
+  border-radius: var(--button-radius);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--duration-normal) var(--easing-standard),
+    background-color var(--duration-normal) var(--easing-standard),
+    border-color var(--duration-normal) var(--easing-standard);
+}
+
+.app-button--compact {
+  min-height: var(--button-height-compact);
+}
+
+.app-button--primary-green {
+  color: var(--button-primary-color);
+  background: var(--button-primary-background);
+}
+
+.app-button--primary-cream {
+  color: var(--button-cream-color);
+  background: var(--button-cream-background);
+}
+
+.app-button--secondary-green {
+  color: var(--color-text);
+  background: var(--button-secondary-background);
+}
+
+.app-button--secondary-cream {
+  color: var(--color-text-inverse);
+  background: transparent;
+  border-color: transparent;
+}
+
+.app-button:active {
+  background: var(--button-primary-background-active);
+}
+
+.app-button--primary-cream:active {
+  color: var(--button-cream-color);
+  background: var(--button-cream-background-active);
+}
+
+.app-button:disabled,
+.app-button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: var(--button-disabled-opacity);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-button--primary-green:hover {
+    background: var(--button-primary-background-hover);
+  }
+
+  .app-button--primary-cream:hover {
+    color: var(--button-cream-color);
+    background: var(--button-cream-background-hover);
+  }
+
+  .app-button--secondary-green:hover {
+    background: var(--button-secondary-background-hover);
+  }
+
+  .app-button--secondary-cream:hover {
+    background: rgb(250 240 230 / 10%);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

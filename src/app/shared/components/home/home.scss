@@ -1,0 +1,169 @@
+:host {
+  display: block;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: var(--color-text-inverse);
+  background: var(--color-brand);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin-inline: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: clamp(11rem, 24vh, 15.75rem);
+  padding-bottom: clamp(7.5rem, 13vh, 9rem);
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero__eyebrow {
+  margin-bottom: var(--space-3);
+  font-size: clamp(var(--font-size-xl), 3vw, var(--font-size-3xl));
+  line-height: var(--line-height-heading);
+}
+
+h1 {
+  max-width: 50rem;
+  font-size: clamp(var(--font-size-4xl), 6vw, var(--font-size-hero));
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.045em;
+  line-height: var(--line-height-tight);
+}
+
+.hero__copy .app-button {
+  min-width: 11.5rem;
+  margin-top: clamp(var(--space-12), 8vh, var(--space-20));
+}
+
+.hero__inspiration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  margin-top: auto;
+}
+
+.hero__inspiration > p {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.hero__cookbook-link {
+  display: inline-flex;
+  min-height: var(--touch-target-min);
+  align-items: center;
+  gap: var(--space-5);
+  color: inherit;
+  font-size: var(--font-size-md);
+  text-decoration: none;
+}
+
+.hero__cookbook-link img {
+  transition: transform var(--duration-normal) var(--easing-standard);
+}
+
+.hero__food {
+  position: absolute;
+  z-index: 2;
+  inset: 0 clamp(1rem, 2.8vw, 2.5rem) 0 auto;
+  width: 48.828dvh;
+  height: 100dvh;
+  margin: 0;
+  pointer-events: none;
+}
+
+.hero__visuals {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero__cookbook-link:hover img {
+    transform: translateX(var(--space-2));
+  }
+}
+
+@media (max-width: 63.999rem) {
+  .hero__content {
+    padding-top: 9rem;
+  }
+
+  .hero__copy {
+    max-width: 58%;
+  }
+
+  .hero__food {
+    right: -10rem;
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .hero {
+    min-height: max(50rem, 100dvh);
+  }
+
+  .hero__content {
+    min-height: max(50rem, 100dvh);
+    padding-top: 6.25rem;
+    padding-bottom: var(--space-8);
+  }
+
+  .hero__copy {
+    max-width: 65%;
+  }
+
+  .hero__eyebrow {
+    font-size: clamp(1.25rem, 6.4vw, var(--font-size-xl));
+  }
+
+  h1 {
+    font-size: clamp(3rem, 17vw, 4rem);
+  }
+
+  .hero__copy .app-button {
+    min-width: 7.5rem;
+    min-height: 3.375rem;
+    margin-top: var(--space-12);
+    padding-inline: var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .hero__inspiration {
+    max-width: 55%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-left: var(--space-4);
+  }
+
+  .hero__inspiration > p {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-heading);
+  }
+
+  .hero__cookbook-link {
+    font-size: var(--font-size-md);
+  }
+
+  .hero__food {
+    inset: 0 -67vw auto auto;
+    width: min(105.6vw, 48.828dvh);
+    height: min(100dvh, 216.533vw);
+  }
+}

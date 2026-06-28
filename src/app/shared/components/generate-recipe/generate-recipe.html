@@ -1,0 +1,139 @@
+<section class="generate" aria-labelledby="generate-title">
+  <div class="page-container">
+
+    <header class="generate__header">
+      <h1 id="generate-title">Generate recipe</h1>
+      <p>Got random stuff in your kitchen? Pop it in — we've got the perfect recipe waiting.</p>
+    </header>
+
+    <div class="generate__panels">
+
+      <!-- Input panel -->
+      <div class="generate__panel">
+        <form class="ingredient-form" (ngSubmit)="addIngredient()">
+          <div class="ingredient-form__field">
+            <label class="ingredient-form__label" for="ingredient-name">Ingredient</label>
+            <input
+              id="ingredient-name"
+              class="ingredient-form__input"
+              type="text"
+              [(ngModel)]="name"
+              name="ingredient-name"
+              autocomplete="off"
+              placeholder=""
+            />
+          </div>
+
+          <div class="ingredient-form__field">
+            <label class="ingredient-form__label">Serving size</label>
+            <div class="ingredient-form__serving">
+              <input
+                class="ingredient-form__amount"
+                type="number"
+                [(ngModel)]="amount"
+                name="amount"
+                min="1"
+              />
+              <select class="ingredient-form__unit" [(ngModel)]="unit" name="unit">
+                @for (u of units; track u) {
+                  <option [value]="u">{{ u }}</option>
+                }
+              </select>
+              <button
+                class="ingredient-form__add"
+                type="submit"
+                [disabled]="!name.trim()"
+                aria-label="Add ingredient"
+              >
+                <img src="/assets/icon-plus.svg" width="18" height="18" alt="" />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- List panel -->
+      <div class="generate__panel">
+        <h2 class="generate__list-title">List of your Ingredients</h2>
+
+        @if (ingredients().length === 0) {
+          <p class="generate__empty">Add your first ingredient above.</p>
+        } @else {
+          <ul class="ingredient-list" role="list">
+            @for (item of ingredients(); track item.id) {
+              <li class="ingredient-item">
+
+                @if (editingId === item.id) {
+                  <div class="ingredient-item__edit">
+                    <input
+                      class="ingredient-item__edit-amount"
+                      type="number"
+                      [(ngModel)]="editAmount"
+                      min="1"
+                    />
+                    <select class="ingredient-item__edit-unit" [(ngModel)]="editUnit">
+                      @for (u of units; track u) {
+                        <option [value]="u">{{ u }}</option>
+                      }
+                    </select>
+                    <input
+                      class="ingredient-item__edit-name"
+                      type="text"
+                      [(ngModel)]="editName"
+                      (keydown.enter)="confirmEdit(item.id)"
+                    />
+                    <button
+                      class="ingredient-item__action"
+                      type="button"
+                      (click)="confirmEdit(item.id)"
+                      aria-label="Confirm"
+                    >
+                      <img src="/assets/icon-check.svg" width="14" height="11" alt="" />
+                    </button>
+                  </div>
+
+                } @else {
+                  <span class="ingredient-item__bullet" aria-hidden="true">•</span>
+                  <span class="ingredient-item__amount">{{ formatAmount(item) }}</span>
+                  <span class="ingredient-item__name">{{ item.name }}</span>
+                  <div class="ingredient-item__actions">
+                    <button
+                      class="ingredient-item__action"
+                      type="button"
+                      (click)="startEdit(item)"
+                      aria-label="Edit {{ item.name }}"
+                    >
+                      <img src="/assets/icon-edit.svg" width="13" height="14" alt="" />
+                    </button>
+                    <button
+                      class="ingredient-item__action"
+                      type="button"
+                      (click)="removeIngredient(item.id)"
+                      aria-label="Delete {{ item.name }}"
+                    >
+                      <img src="/assets/icon-delete.svg" width="13" height="15" alt="" />
+                    </button>
+                  </div>
+                }
+
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+    </div>
+
+    <div class="generate__footer">
+      <button
+        class="app-button app-button--primary-green"
+        type="button"
+        [disabled]="!canContinue()"
+        (click)="next()"
+      >
+        Next step
+      </button>
+    </div>
+
+  </div>
+</section>

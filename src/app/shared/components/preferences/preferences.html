@@ -1,0 +1,143 @@
+<section class="preferences" aria-labelledby="preferences-title">
+  <div class="page-container">
+
+    <nav class="preferences__back" aria-label="Back">
+      <a class="preferences__back-link" routerLink="/generate">
+        <img src="/assets/icon-arrow-left.svg" width="26" height="15" alt="" />
+        <span>Ingredients</span>
+      </a>
+    </nav>
+
+    <h1 id="preferences-title" class="preferences__title">Choose your preferences</h1>
+
+    <div class="preferences__counters">
+
+      <div class="counter">
+        <p class="counter__label">How many portions you need?</p>
+        <div class="counter__controls">
+          <button
+            class="counter__btn"
+            type="button"
+            (click)="decrementPortions()"
+            [disabled]="portions() <= 1"
+            aria-label="Decrease portions"
+          >
+            <img src="/assets/icon-minus.svg" width="16" height="16" alt="" />
+          </button>
+          <span class="counter__value" aria-live="polite">{{ portions() }} Portions</span>
+          <button
+            class="counter__btn"
+            type="button"
+            (click)="incrementPortions()"
+            [disabled]="portions() >= 10"
+            aria-label="Increase portions"
+          >
+            <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />
+          </button>
+        </div>
+      </div>
+
+      <div class="counter">
+        <p class="counter__label">How many are cooking?</p>
+        <div class="counter__controls">
+          <button
+            class="counter__btn"
+            type="button"
+            (click)="decrementCooks()"
+            [disabled]="cooks() <= 1"
+            aria-label="Decrease cooks"
+          >
+            <img src="/assets/icon-minus.svg" width="16" height="16" alt="" />
+          </button>
+          <span class="counter__value" aria-live="polite">{{ cooks() }} {{ cooks() === 1 ? 'Person' : 'People' }}</span>
+          <button
+            class="counter__btn"
+            type="button"
+            (click)="incrementCooks()"
+            [disabled]="cooks() >= 6"
+            aria-label="Increase cooks"
+          >
+            <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pref-card">
+
+      <div class="pref-group">
+        <div class="pref-group__heading">
+          <img src="/assets/icon-clock.svg" width="20" height="20" alt="" />
+          <span>Cooking time</span>
+        </div>
+        <div class="pref-group__chips" role="group" aria-label="Cooking time">
+          @for (ct of cookingTimes; track ct.value) {
+            <button
+              class="pref-chip pref-chip--time"
+              type="button"
+              [class.pref-chip--active]="cookingTime() === ct.value"
+              (click)="selectCookingTime(ct.value)"
+              [attr.aria-pressed]="cookingTime() === ct.value"
+            >
+              <span class="pref-chip__label">{{ ct.label }}</span>
+              <span class="pref-chip__hint">{{ ct.hint }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-group__heading">
+          <img src="/assets/icon-cuisine.svg" width="20" height="20" alt="" />
+          <span>Cuisine</span>
+        </div>
+        <div class="pref-group__chips" role="group" aria-label="Cuisine">
+          @for (c of cuisines; track c) {
+            <button
+              class="pref-chip"
+              type="button"
+              [class.pref-chip--active]="cuisine() === c"
+              (click)="selectCuisine(c)"
+              [attr.aria-pressed]="cuisine() === c"
+            >
+              <span class="pref-chip__label">{{ c }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-group__heading">
+          <img src="/assets/icon-diet.svg" width="20" height="20" alt="" />
+          <span>Diet preferences</span>
+        </div>
+        <div class="pref-group__chips" role="group" aria-label="Diet preferences">
+          @for (d of diets; track d) {
+            <button
+              class="pref-chip"
+              type="button"
+              [class.pref-chip--active]="diet() === d"
+              (click)="selectDiet(d)"
+              [attr.aria-pressed]="diet() === d"
+            >
+              <span class="pref-chip__label">{{ d }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <div class="preferences__footer">
+      <button
+        class="app-button app-button--primary-green"
+        type="button"
+        (click)="generate()"
+      >
+        Generate a recipe
+      </button>
+    </div>
+
+  </div>
+</section>
