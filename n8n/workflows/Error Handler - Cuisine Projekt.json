@@ -1,0 +1,68 @@
+{
+  "name": "Error Handler - Cuisine Projekt",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -16
+      ],
+      "id": "b2e79101-6bb6-405d-88a0-0f94832350f4",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "fernando13ca@gmail.com",
+        "toEmail": "fernando13ca@gmail.com",
+        "subject": "=⚠️ Fehler im Workflow: {{ $json.workflow.name }}",
+        "html": "=<h3>Es ist ein Fehler aufgetreten</h3>\n<p><b>Workflow:</b> {{ $json.workflow.name }}</p>\n<p><b>Fehler:</b> {{ $json.execution.error.message }}</p>\n<p><b>Node:</b> {{ $json.execution.error.node.name }}</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -16
+      ],
+      "id": "a1da5e03-7ed0-46b7-be2b-6f512f150be2",
+      "name": "Send an Email",
+      "webhookId": "5648adad-d127-497c-8de6-6da5d48a656e",
+      "credentials": {
+        "smtp": {
+          "id": "LignVihYDrp4mRqe",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "325fb2ed-3670-4b0f-aa14-7cf985614e55",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "be35b0b1c154309ad387307ab72111b437e2cd3904d48e23cfeb33e86728f18e"
+  },
+  "nodeGroups": [],
+  "id": "n6NVYKWPUfLG4RLN",
+  "tags": []
+}

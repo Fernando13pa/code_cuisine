@@ -1,0 +1,168 @@
+@if (recipe(); as r) {
+  <section class="recipe-detail" aria-labelledby="recipe-title">
+    <div class="page-container recipe-detail__inner">
+
+      <nav class="recipe-detail__back" aria-label="Back">
+        <a class="recipe-detail__back-link" routerLink="/results">
+          <img src="/assets/icon-arrow-left.svg" width="26" height="15" alt="" />
+          <span>Recipe results</span>
+        </a>
+      </nav>
+
+      <div class="recipe-summary">
+        <div class="recipe-summary__main">
+          <p class="recipe-summary__time">
+            <img src="/assets/icon-clock.svg" width="18" height="18" alt="" />
+            Cooking time: {{ r.cookingTime }}min
+          </p>
+          <h1 id="recipe-title">{{ r.title }}</h1>
+
+          <p class="recipe-summary__cooks">
+            <span>Cooking person: {{ participatingChefs().length || 1 }}</span>
+            @if (hasMultipleChefs()) {
+              @for (chef of participatingChefs(); track chef) {
+                <span class="chef-badge" [class.chef-badge--1]="chef === 1" [class.chef-badge--2]="chef === 2">
+                  @if (chefIcon(chef); as icon) {
+                    <img [src]="icon" width="18" height="14" alt="" />
+                  }
+                  Chef {{ chef }}
+                </span>
+              }
+            }
+          </p>
+        </div>
+
+        <div class="recipe-summary__aside">
+          <div class="recipe-summary__tags">
+            @for (tag of r.tags; track tag) {
+              <span class="recipe-summary__tag">{{ tag }}</span>
+            }
+            <span class="recipe-summary__tag">{{ timeCategory() }}</span>
+            <span class="recipe-summary__tag recipe-summary__tag--likes">
+              <img src="/assets/icon-heart-filled.svg" width="16" height="14" alt="" />
+              {{ r.likes }}
+            </span>
+          </div>
+
+          <div class="recipe-summary__nutrition">
+            <p class="recipe-summary__nutrition-title">Nutritional information</p>
+            <dl>
+              <div>
+                <dt>Energy</dt>
+                <dd>{{ r.nutritionalInfo.energyPerPortion }} kcal</dd>
+              </div>
+              <div>
+                <dt>Protein</dt>
+                <dd>{{ r.nutritionalInfo.proteinPerPortion }}g</dd>
+              </div>
+              <div>
+                <dt>Fat</dt>
+                <dd>{{ r.nutritionalInfo.fatPerPortion }}g</dd>
+              </div>
+              <div>
+                <dt>Carbs</dt>
+                <dd>{{ r.nutritionalInfo.carbsPerPortion }}g</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-banner">
+        <h2>Ingredients</h2>
+      </div>
+
+      <div class="ingredients-columns">
+        <div class="ingredients-columns__group">
+          <h3>Your ingredients</h3>
+          <ul>
+            @for (ingredient of r.ingredients; track ingredient.id) {
+              <li>
+                <span class="ingredients-columns__amount">{{ ingredient.amount }}{{ ingredient.unit }}</span>
+                {{ ingredient.name }}
+              </li>
+            }
+          </ul>
+        </div>
+
+        @if (r.extraIngredients.length > 0) {
+          <div class="ingredients-columns__group">
+            <h3>Extra ingredients</h3>
+            <ul>
+              @for (ingredient of r.extraIngredients; track ingredient.id) {
+                <li>
+                  <span class="ingredients-columns__amount">{{ ingredient.amount }}{{ ingredient.unit }}</span>
+                  {{ ingredient.name }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+
+      @if (r.missingIngredientsNote) {
+        <p class="recipe-detail__missing-note">{{ r.missingIngredientsNote }}</p>
+      }
+
+      <div class="section-banner">
+        <h2>Directions</h2>
+      </div>
+
+      <ol class="directions-list">
+        @for (step of r.steps; track step.number) {
+          <li class="directions-list__step">
+            <div class="directions-list__heading">
+              <span class="directions-list__number">{{ step.number }}.</span>
+              @if (hasMultipleChefs()) {
+                <span
+                  class="chef-badge"
+                  [class.chef-badge--1]="step.chef === 1"
+                  [class.chef-badge--2]="step.chef === 2"
+                >
+                  @if (chefIcon(step.chef); as icon) {
+                    <img [src]="icon" width="18" height="14" alt="" />
+                  }
+                  Chef {{ step.chef }}
+                </span>
+              }
+            </div>
+            <p class="directions-list__description">{{ step.description }}</p>
+          </li>
+        }
+      </ol>
+
+      <div class="recipe-detail__favorite">
+        <p><strong>Just finished this meal?</strong> Give it a heart, so that others know this is delicious.</p>
+        <button
+          class="recipe-detail__favorite-btn"
+          type="button"
+          (click)="toggleFavorite()"
+          [attr.aria-pressed]="isFavorited()"
+          aria-label="Mark recipe as favorite"
+        >
+          <img
+            [src]="isFavorited() ? '/assets/icon-heart-filled.svg' : '/assets/icon-heart.svg'"
+            width="24"
+            height="21"
+            alt=""
+          />
+        </button>
+      </div>
+
+    </div>
+
+    <div class="recipe-detail__promo">
+      <div class="page-container recipe-detail__promo-inner">
+        <p>Find inspiration for your next culinary adventure!</p>
+        <a class="app-button app-button--primary-green app-button--compact" routerLink="/cookbook">Cookbook</a>
+      </div>
+    </div>
+
+    <div class="page-container recipe-detail__generate-link">
+      <a routerLink="/generate">
+        <span>Generate new recipe</span>
+        <img src="/assets/icon-arrow-right.svg" width="26" height="15" alt="" />
+      </a>
+    </div>
+  </section>
+}

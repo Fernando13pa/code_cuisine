@@ -342,6 +342,25 @@ ol {
   }
 }
 
+// Every routed component is inserted directly after the router outlet. Animating
+// that host element gives all pages the same calm entrance without coupling the
+// individual components to Angular's router lifecycle.
+main > router-outlet + * {
+  animation: page-route-enter 560ms var(--easing-entrance) both;
+}
+
+@keyframes page-route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

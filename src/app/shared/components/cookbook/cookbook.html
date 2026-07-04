@@ -1,0 +1,63 @@
+<section class="cookbook" aria-labelledby="cookbook-title">
+  <div class="page-container cookbook__inner">
+    <a class="cookbook__back" routerLink="/">
+      <img src="/assets/icon-arrow-left.svg" width="24" height="14" alt="" />
+      <span>Back</span>
+    </a>
+
+    <div class="cookbook__intro">
+      <header class="cookbook__copy">
+        <h1 id="cookbook-title">Cookbook</h1>
+        <p>
+          From quick bites to gourmet delights, explore them all in our ultimate cookbook and
+          get inspired for your next culinary adventure.
+        </p>
+      </header>
+
+      <section class="popular" aria-labelledby="popular-title">
+        <h2 id="popular-title">
+          Most liked recipes
+          <img src="/assets/icon-heart.svg" width="25" height="23" alt="" />
+        </h2>
+
+        <div class="popular__scroller">
+          @for (recipe of popularRecipes; track recipe.id) {
+            <article class="popular-card">
+              <div class="popular-card__meta">
+                <span class="popular-card__time">
+                  <img src="/assets/icon-clock.svg" width="16" height="16" alt="" />
+                  Cooking time: {{ recipe.cookingTime }}min
+                </span>
+                <span class="popular-card__likes">
+                  <img src="/assets/icon-heart.svg" width="16" height="15" alt="" />
+                  {{ recipe.likes }}
+                </span>
+              </div>
+              <h3>{{ recipe.title }}</h3>
+            </article>
+          }
+        </div>
+      </section>
+    </div>
+
+    <div class="cuisine-grid">
+      @for (cuisine of cuisines; track cuisine.name) {
+        <article class="cuisine-card">
+          <h2>{{ cuisine.name }} <span aria-hidden="true">{{ cuisine.emoji }}</span></h2>
+          <img
+            class="cuisine-card__image"
+            [src]="cuisine.image"
+            width="400"
+            height="400"
+            [alt]="cuisine.name + ' dishes'"
+          />
+        </article>
+      }
+    </div>
+
+    <a class="cookbook__generate" routerLink="/generate">
+      <span>Generate new recipe</span>
+      <img src="/assets/icon-arrow-right.svg" width="25" height="14" alt="" />
+    </a>
+  </div>
+</section>

@@ -82,6 +82,10 @@
   }
 }
 
+.recipe-card__view {
+  margin-top: var(--space-5);
+}
+
 .results__empty {
   display: grid;
   justify-items: center;

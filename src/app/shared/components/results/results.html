@@ -23,6 +23,12 @@
                   <li>{{ tag }}</li>
                 }
               </ul>
+              <a
+                class="app-button app-button--primary-green app-button--compact recipe-card__view"
+                [routerLink]="['/recipe', recipe.id]"
+              >
+                View
+              </a>
             </div>
           </article>
         }

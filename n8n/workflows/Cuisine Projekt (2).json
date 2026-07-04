@@ -1,0 +1,366 @@
+{
+  "name": "Cuisine Projekt",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "maxOutputTokens": 32000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        272
+      ],
+      "id": "003442b4-5d8b-433d-80c0-34409e03738a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zuI3PZEcMBiUVDds",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "notes": "LLM-Backend für den Rezept-Generator. Modell: gemini-2.5-flash.\nMax Output Tokens auf 32000 gesetzt, um Abbrüche bei komplexen\n3-Rezept-Antworten zu vermeiden."
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate_recipe",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        0
+      ],
+      "id": "5d63a8b3-2f06-4039-9dc5-06a5dfca2301",
+      "name": "Zutaten-Eingang (Angular)",
+      "webhookId": "259b312e-1093-41f9-b2eb-41f232c4f9d4",
+      "notes": "Empfängt POST-Requests vom Angular-Frontend mit den User-Eingaben:\ningredients (string), portions (1-12), timeCategory (quick/medium/elaborate),\ndiet (vegetarian/vegan/keto/none), numberOfChefs (1-3).\nEndpoint: /webhook/generate_recipe"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Du bist ein kreativer Koch-Assistent für ein Kochspiel mit {{ $json.body.numberOfChefs }} Kochhelfer(n).\n\nVerfügbare Zutaten: {{ $json.body.ingredients }}\nGewünschte Portionen: {{ $json.body.portions }}\nZeitrahmen: {{ $json.body.timeCategory }} (quick = bis 20 Min, medium = 20-45 Min, elaborate = 45+ Min)\nErnährungsweise: {{ $json.body.diet }} (vegetarian, vegan, keto, oder none)\n\nGeneriere genau 3 unterschiedliche Rezeptvorschläge, die sich in Zubereitungsart oder Geschmacksrichtung unterscheiden. Jedes Rezept soll:\n- Mindestens 70% der angegebenen Zutaten nutzen\n- Höchstens 3 zusätzliche Basis-Zutaten benötigen (in extraIngredients), diese klar in missingIngredientsNote benennen\n- Zum gewählten Zeitrahmen passen\n- Die Ernährungsweise strikt einhalten (z.B. bei \"vegan\" keine tierischen Produkte)\n- Alle Mengenangaben auf die gewünschte Portionszahl skalieren\n- Nährwerte sowohl pro Portion (Feldnamen mit \"PerPortion\") als auch für das Gesamtrezept (Feldnamen mit \"Total\") angeben\n- Zubereitungsschritte chronologisch und logisch aufbauen\n- Schritte auf die {{ $json.body.numberOfChefs }} Kochhelfer verteilen (chef: \"1\" bis \"{{ $json.body.numberOfChefs }}\")\n- Parallele Arbeitsschritte (die gleichzeitig von verschiedenen Köchen ausgeführt werden können) mit isParallel: true kennzeichnen\n- Wartezeiten (z.B. Backofen) für andere Vorbereitungsschritte nutzen\n- Auch für Kochanfänger verständlich sein\n\nAntworte AUSSCHLIESSLICH mit validem JSON in genau dieser Struktur, ohne Markdown-Codeblöcke (keine ```), ohne Erklärungen davor oder danach. Die Antwort muss direkt mit { beginnen und mit } enden. Das \"recipes\"-Array muss genau 3 Objekte enthalten:\n\n{\n  \"recipes\": [\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"cookingTime\": 30,\n      \"cuisine\": \"German\",\n      \"tags\": [\"string\"],\n      \"missingIngredientsNote\": \"string\",\n      \"nutritionalInfo\": {\n        \"energyPerPortion\": 0, \"proteinPerPortion\": 0, \"fatPerPortion\": 0, \"carbsPerPortion\": 0,\n        \"energyTotal\": 0, \"proteinTotal\": 0, \"fatTotal\": 0, \"carbsTotal\": 0\n      },\n      \"ingredients\": [{ \"name\": \"string\", \"amount\": 0, \"unit\": \"gram\" }],\n      \"extraIngredients\": [{ \"name\": \"string\", \"amount\": 0, \"unit\": \"gram\" }],\n      \"steps\": [{ \"number\": 1, \"description\": \"string\", \"chef\": \"1\", \"isParallel\": false }]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        688,
+        16
+      ],
+      "id": "3fe68186-539a-4d43-8788-04ffefb2f77f",
+      "name": "Rezept-Generator ",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000,
+      "notes": "Generiert genau 3 unterschiedliche Rezeptvorschläge basierend auf den\nNutzereingaben. Nutzt Freitext-JSON-Antwort statt Function-Calling,\nda Gemini beim erzwungenen strukturierten Output (Tool-Calling) \nunzuverlässig war (siehe Fehleranalyse vom 04.07.2026).\nRetry On Fail ist aktiviert (3 Versuche) als zusätzliches Sicherheitsnetz."
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawText = $input.first().json.output;\n\n// Entfernt eventuelle Markdown-Codeblock-Marker, falls Gemini sie trotzdem einbaut\nconst cleaned = rawText.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n\nconst parsed = JSON.parse(cleaned);\n\nreturn { json: parsed };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        -112
+      ],
+      "id": "ad77abf4-7029-4fde-8ed1-63c61f311d83",
+      "name": "JSON-Antwort parsen",
+      "notes": "Extrahiert und parsed das rohe JSON aus der Gemini-Textantwort.\nEntfernt eventuelle Markdown-Codeblock-Marker (```json), falls das\nModell sie trotz Anweisung mit einbaut. Wirft einen Fehler, falls\ndie Antwort kein valides JSON enthält (z.B. bei Gemini-Ausfall)."
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "recipes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -160
+      ],
+      "id": "c323cb37-dae1-4bce-9380-6b543636def5",
+      "name": "Rezepte einzeln aufteilen",
+      "notes": "Teilt das recipes-Array (3 Rezepte) in 3 einzelne Items auf.\nNotwendig, damit jedes Rezept als eigenständiger Eintrag in\nFirebase gespeichert wird (statt als verschachteltes Array).\nFeld: recipes."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://cuisine-recipe-8ef7b-default-rtdb.europe-west1.firebasedatabase.app/recipes.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1440,
+        -352
+      ],
+      "id": "862d72cc-3aa2-40ea-bc59-b806df42e214",
+      "name": "Rezepte in Firebase speichern ",
+      "notes": "Speichert jedes der 3 Rezepte einzeln per POST in der Firebase\nRealtime Database. Läuft 3x (einmal pro Rezept-Item).\nEndpoint: https://cuisine-recipe-8ef7b-default-rtdb.europe-west1.firebasedatabase.app/recipes.json"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { output: $json } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1360,
+        48
+      ],
+      "id": "e9c54840-3ab5-457c-a65d-56740673b635",
+      "name": "Antwort an Angular senden ",
+      "notes": "Sendet alle 3 generierten Rezepte gebündelt als JSON-Antwort\nzurück an das Angular-Frontend. Läuft unabhängig vom\nFirebase-Speicher-Pfad (direkte Verzweigung vom AI Agent)."
+    },
+    {
+      "parameters": {
+        "url": "=https://cuisine-recipe-8ef7b-default-rtdb.europe-west1.firebasedatabase.app/quota/{{ $today.format('yyyy-MM-dd') }}.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        0
+      ],
+      "id": "60027a74-4b08-42f0-b63e-a526b954cb0d",
+      "name": "Quota-Stand abfragen"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "03254d06-3d51-4542-9393-761dfc045056",
+              "leftValue": "={{ $json.limitReached }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        0
+      ],
+      "id": "67a91d27-7855-44ce-9e8a-eb5382f0e3e3",
+      "name": "Limit erreicht"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n    \"error\": true,\n     \"message\": \"{{ $json.limitReason }}\"\n   }",
+        "options": {
+          "responseCode": 429
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        384,
+        -224
+      ],
+      "id": "8cc60c86-af4f-4d00-a747-aac0d65145f6",
+      "name": "Fehler: Quote überschritten"
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookData = $('Zutaten-Eingang (Angular)').first().json;\nconst headers = webhookData.headers;\n\nconst clientIp = \n  headers['x-forwarded-for']?.split(',')[0].trim() ||\n  headers['x-real-ip'] ||\n  webhookData.ip ||\n  '127.0.0.1';\n\n// Firebase erlaubt keine Punkte in Keys - IPv4 (und \":\" bei IPv6) ersetzen\nconst safeIp = clientIp.replace(/\\./g, '_').replace(/:/g, '_');\n\nconst quotaData = $input.first().json;\n\nconst ipCount = quotaData[safeIp] || 0;\nconst totalCount = quotaData['_total'] || 0;\n\nconst IP_LIMIT = 3;\nconst TOTAL_LIMIT = 12;\n\nconst ipLimitReached = ipCount >= IP_LIMIT;\nconst totalLimitReached = totalCount >= TOTAL_LIMIT;\nconst limitReached = ipLimitReached || totalLimitReached;\n\nreturn {\n  json: {\n    ...webhookData,\n    clientIp,\n    safeIp,\n    ipCount,\n    totalCount,\n    limitReached,\n    limitReason: ipLimitReached \n      ? 'Du hast dein Tageslimit von 3 Rezepten erreicht.' \n      : totalLimitReached \n        ? 'Das System-weite Tageslimit ist erreicht. Bitte versuche es morgen erneut.' \n        : null\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "440b4070-7277-41f7-b337-e8d69fd1e7ef",
+      "name": "IP + Quote auswerten"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://cuisine-recipe-8ef7b-default-rtdb.europe-west1.firebasedatabase.app/quota/{{ $today.format('yyyy-MM-dd') }}.json",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"{{ $json.safeIp }}\": {{ $json.ipCount + 1 }}, \"_total\": {{ $json.totalCount + 1 }} }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        432,
+        16
+      ],
+      "id": "8919993e-d438-4342-8c43-0b82e792c541",
+      "name": "Zähler erhöhen"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Rezept-Generator ",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zutaten-Eingang (Angular)": {
+      "main": [
+        [
+          {
+            "node": "Quota-Stand abfragen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rezept-Generator ": {
+      "main": [
+        [
+          {
+            "node": "JSON-Antwort parsen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON-Antwort parsen": {
+      "main": [
+        [
+          {
+            "node": "Rezepte einzeln aufteilen",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Antwort an Angular senden ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rezepte einzeln aufteilen": {
+      "main": [
+        [
+          {
+            "node": "Rezepte in Firebase speichern ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rezepte in Firebase speichern ": {
+      "main": [
+        []
+      ]
+    },
+    "Antwort an Angular senden ": {
+      "main": [
+        []
+      ]
+    },
+    "Quota-Stand abfragen": {
+      "main": [
+        [
+          {
+            "node": "IP + Quote auswerten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit erreicht": {
+      "main": [
+        [
+          {
+            "node": "Fehler: Quote überschritten",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Zähler erhöhen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IP + Quote auswerten": {
+      "main": [
+        [
+          {
+            "node": "Limit erreicht",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zähler erhöhen": {
+      "main": [
+        [
+          {
+            "node": "Rezept-Generator ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "n6NVYKWPUfLG4RLN",
+    "timezone": "Europe/Berlin",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "ff53ae46-1ecd-43e1-ba53-1cca86bacdf4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "be35b0b1c154309ad387307ab72111b437e2cd3904d48e23cfeb33e86728f18e"
+  },
+  "nodeGroups": [],
+  "id": "Byyy2rTxUqrkoC0D",
+  "tags": []
+}

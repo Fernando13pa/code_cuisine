@@ -13,6 +13,10 @@ export class Loading implements OnInit {
   protected readonly recipeService = inject(RecipeService);
 
   ngOnInit(): void {
+    if (this.recipeService.ingredients().length === 0) {
+      void this.router.navigate(['/generate']);
+      return;
+    }
     void this.generateRecipes();
   }
 

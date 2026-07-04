@@ -5,6 +5,8 @@ import { GenerateRecipe } from './shared/components/generate-recipe/generate-rec
 import { Preferences } from './shared/components/preferences/preferences';
 import { Loading } from './shared/components/loading/loading';
 import { Results } from './shared/components/results/results';
+import { RecipeDetail } from './shared/components/recipe-detail/recipe-detail';
+import { Cookbook } from './shared/components/cookbook/cookbook';
 
 export const routes: Routes = [
   {
@@ -26,6 +28,14 @@ export const routes: Routes = [
   {
     path: 'results',
     component: Results,
+  },
+  {
+    path: 'recipe/:id',
+    component: RecipeDetail,
+  },
+  {
+    path: 'cookbook',
+    component: Cookbook,
   },
   {
     path: '**',
