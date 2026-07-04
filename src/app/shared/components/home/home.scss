@@ -1,5 +1,7 @@
 :host {
   display: block;
+  min-height: 100vh;
+  background: var(--color-brand);
 }
 
 .hero {
@@ -15,21 +17,43 @@
   position: relative;
   z-index: 5;
   display: flex;
-  width: 100%;
-  max-width: none;
   min-height: 100vh;
   min-height: 100dvh;
-  margin-inline: 0;
   flex-direction: column;
   align-items: flex-start;
   padding-top: clamp(11rem, 24vh, 15.75rem);
   padding-bottom: clamp(7.5rem, 13vh, 9rem);
+  transition:
+    padding-top var(--duration-layout) var(--easing-layout),
+    padding-bottom var(--duration-layout) var(--easing-layout);
 }
 
 .hero__copy {
   display: flex;
+  max-width: 100%;
   flex-direction: column;
   align-items: flex-start;
+  transform: translateY(0);
+  transition:
+    max-width var(--duration-layout) var(--easing-layout),
+    transform var(--duration-layout) var(--easing-layout);
+}
+
+.hero__copy > * {
+  animation: hero-content-reveal var(--duration-entrance)
+    var(--easing-entrance) both;
+}
+
+.hero__copy > :nth-child(1) {
+  animation-delay: 100ms;
+}
+
+.hero__copy > :nth-child(2) {
+  animation-delay: 220ms;
+}
+
+.hero__copy > :nth-child(3) {
+  animation-delay: 360ms;
 }
 
 .hero__eyebrow {
@@ -53,9 +77,17 @@ h1 {
 
 .hero__inspiration {
   display: flex;
+  max-width: 100%;
   align-items: center;
   gap: var(--space-10);
   margin-top: auto;
+  margin-left: 0;
+  transition:
+    max-width var(--duration-layout) var(--easing-layout),
+    gap var(--duration-layout) var(--easing-layout),
+    margin-left var(--duration-layout) var(--easing-layout);
+  animation: hero-content-reveal var(--duration-entrance)
+    var(--easing-entrance) 520ms both;
 }
 
 .hero__inspiration > p {
@@ -77,20 +109,44 @@ h1 {
   transition: transform var(--duration-normal) var(--easing-standard);
 }
 
-.hero__food {
+.hero__visual-container {
   position: absolute;
   z-index: 2;
-  inset: 0 clamp(1rem, 2.8vw, 2.5rem) 0 auto;
-  width: 48.828dvh;
+  inset: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero__food {
+  --hero-visual-width: 48.828dvh;
+  --hero-food-edge: clamp(1rem, 2.8vw, 2.5rem);
+  // Tall viewports make the height-based artwork wider. Move it continuously
+  // towards the content's right edge before it can overlap the copy.
+  --hero-food-shift-x: max(
+    0rem,
+    calc(
+      var(--hero-visual-width) - 42vw + var(--hero-food-edge)
+    )
+  );
+
+  position: absolute;
+  inset: 0 var(--hero-food-edge) 0 auto;
+  width: var(--hero-visual-width);
   height: 100dvh;
   margin: 0;
-  pointer-events: none;
+  transform: translateX(var(--hero-food-shift-x));
+  transition:
+    width var(--duration-layout) var(--easing-layout),
+    height var(--duration-layout) var(--easing-layout),
+    transform var(--duration-layout) var(--easing-layout);
 }
 
 .hero__visuals {
   width: 100%;
-  max-width: none;
   height: 100%;
+  transform-origin: center right;
+  animation: hero-visual-reveal var(--duration-entrance-visual)
+    var(--easing-entrance) 120ms both;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -106,26 +162,21 @@ h1 {
 
   .hero__copy {
     max-width: 58%;
+    transform: translateY(var(--space-2));
   }
 
-  .hero__food {
-    right: -10rem;
-  }
 }
 
-@media (max-width: 39.999rem) {
-  .hero {
-    min-height: max(50rem, 100dvh);
-  }
-
+@media (max-width: 52.999rem) {
   .hero__content {
-    min-height: max(50rem, 100dvh);
-    padding-top: 6.25rem;
-    padding-bottom: var(--space-8);
+    min-height: 100dvh;
+    padding-top: clamp(5.5rem, 13dvh, 6.25rem);
+    padding-bottom: clamp(var(--space-4), 4dvh, var(--space-8));
   }
 
   .hero__copy {
     max-width: 65%;
+    transform: translateY(0);
   }
 
   .hero__eyebrow {
@@ -162,8 +213,9 @@ h1 {
   }
 
   .hero__food {
-    inset: 0 -67vw auto auto;
-    width: min(105.6vw, 48.828dvh);
+    --hero-visual-width: min(105.6vw, 48.828dvh);
+
+    width: var(--hero-visual-width);
     height: min(100dvh, 216.533vw);
   }
 }

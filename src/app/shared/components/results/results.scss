@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.results {
+  padding-block: var(--space-12) var(--space-20);
+}
+
+.results__inner {
+  max-width: 74rem;
+}
+
+.results__header {
+  margin-bottom: var(--space-10);
+  text-align: center;
+
+  h1 {
+    color: var(--color-brand);
+    font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-3xl));
+  }
+
+  p {
+    margin-top: var(--space-2);
+    font-size: var(--font-size-md);
+  }
+}
+
+.results__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.recipe-card {
+  overflow: hidden;
+  background: var(--color-panel-subtle);
+  border-radius: var(--radius-xl);
+}
+
+.recipe-card__visual {
+  display: grid;
+  height: 13rem;
+  place-items: center;
+  background: var(--color-panel);
+
+  img {
+    width: 72%;
+    height: 80%;
+    object-fit: contain;
+  }
+}
+
+.recipe-card__body {
+  padding: var(--space-5);
+
+  h2 {
+    margin-top: var(--space-3);
+    font-size: var(--font-size-xl);
+  }
+}
+
+.recipe-card__meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-brand);
+  font-size: var(--font-size-xs);
+}
+
+.recipe-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin-top: var(--space-5);
+  list-style: none;
+
+  li {
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-control);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+  }
+}
+
+.results__empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+@media (max-width: 63.999rem) {
+  .results__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-card {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.8fr) 1fr;
+  }
+}
+
+@media (max-width: 47.999rem) {
+  .results {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .results__header {
+    text-align: left;
+  }
+
+  .recipe-card {
+    display: block;
+  }
+
+  .recipe-card__visual {
+    height: 11rem;
+  }
+}

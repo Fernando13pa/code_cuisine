@@ -1,0 +1,37 @@
+<section class="results" aria-labelledby="results-title">
+  <div class="page-container results__inner">
+    <header class="results__header">
+      <h1 id="results-title">Your recipe results</h1>
+      <p>Three ideas made from what you already have.</p>
+    </header>
+
+    @if (recipeService.results().length > 0) {
+      <div class="results__grid">
+        @for (recipe of recipeService.results(); track recipe.id) {
+          <article class="recipe-card">
+            <div class="recipe-card__visual" aria-hidden="true">
+              <img src="/imgs/img-results-ai-robot.svg" alt="" />
+            </div>
+            <div class="recipe-card__body">
+              <p class="recipe-card__meta">
+                <span>{{ recipe.cuisine }}</span>
+                <span>{{ recipe.cookingTime }} min</span>
+              </p>
+              <h2>{{ recipe.title }}</h2>
+              <ul class="recipe-card__tags" aria-label="Recipe tags">
+                @for (tag of recipe.tags; track tag) {
+                  <li>{{ tag }}</li>
+                }
+              </ul>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="results__empty">
+        <p>No recipes have been generated yet.</p>
+        <a class="app-button app-button--primary-green" routerLink="/generate">Add ingredients</a>
+      </div>
+    }
+  </div>
+</section>

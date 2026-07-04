@@ -39,13 +39,21 @@ export class GenerateRecipe {
   readonly ingredients = signal<Ingredient[]>(this.recipeService.ingredients());
   readonly canContinue = computed(() => this.ingredients().length > 0);
 
+  get isIngredientValid(): boolean {
+    return this.name.trim().length > 0 && this.isValidAmount(this.amount);
+  }
+
+  get isEditValid(): boolean {
+    return this.editName.trim().length > 0 && this.isValidAmount(this.editAmount);
+  }
+
   formatAmount(item: Ingredient): string {
     const abbr = this.unitAbbr[item.unit];
     return abbr ? `${item.amount}${abbr}` : `${item.amount}`;
   }
 
   addIngredient(): void {
-    if (!this.name.trim()) return;
+    if (!this.isIngredientValid) return;
     this.ingredients.update(list => [
       ...list,
       {
@@ -68,7 +76,7 @@ export class GenerateRecipe {
   }
 
   confirmEdit(id: string): void {
-    if (!this.editName.trim()) return;
+    if (!this.isEditValid) return;
     this.ingredients.update(list =>
       list.map(i =>
         i.id === id
@@ -88,7 +96,12 @@ export class GenerateRecipe {
   }
 
   next(): void {
+    if (!this.canContinue()) return;
     this.recipeService.setIngredients(this.ingredients());
     this.router.navigate(['/preferences']);
+  }
+
+  private isValidAmount(value: number): boolean {
+    return Number.isFinite(value) && value > 0;
   }
 }

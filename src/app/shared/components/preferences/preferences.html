@@ -29,7 +29,7 @@
             class="counter__btn"
             type="button"
             (click)="incrementPortions()"
-            [disabled]="portions() >= 10"
+            [disabled]="portions() >= 12"
             aria-label="Increase portions"
           >
             <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />
@@ -54,7 +54,7 @@
             class="counter__btn"
             type="button"
             (click)="incrementCooks()"
-            [disabled]="cooks() >= 6"
+            [disabled]="cooks() >= 3"
             aria-label="Increase cooks"
           >
             <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />

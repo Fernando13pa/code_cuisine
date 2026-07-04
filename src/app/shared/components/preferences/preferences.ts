@@ -35,7 +35,7 @@ export class Preferences {
   readonly diet = signal<DietType | null>(null);
 
   incrementPortions(): void {
-    if (this.portions() < 10) this.portions.update(v => v + 1);
+    if (this.portions() < 12) this.portions.update(v => v + 1);
   }
 
   decrementPortions(): void {
@@ -43,7 +43,7 @@ export class Preferences {
   }
 
   incrementCooks(): void {
-    if (this.cooks() < 6) this.cooks.update(v => v + 1);
+    if (this.cooks() < 3) this.cooks.update(v => v + 1);
   }
 
   decrementCooks(): void {

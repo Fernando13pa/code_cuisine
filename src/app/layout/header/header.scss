@@ -21,11 +21,6 @@
   background: transparent;
 }
 
-.site-header--overlay .site-header__inner {
-  width: 100%;
-  max-width: none;
-}
-
 .site-header__inner {
   width: min(100%, var(--content-max-width));
   margin-inline: auto;

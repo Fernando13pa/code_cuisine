@@ -92,7 +92,12 @@
   --touch-target-min: 2.75rem;
   --duration-fast: 150ms;
   --duration-normal: 200ms;
+  --duration-layout: 650ms;
+  --duration-entrance: 900ms;
+  --duration-entrance-visual: 1080ms;
   --easing-standard: ease;
+  --easing-layout: cubic-bezier(0.22, 1, 0.36, 1);
+  --easing-entrance: cubic-bezier(0.16, 1, 0.3, 1);
 
   // Reusable button system
   --button-height: 3.75rem;
@@ -310,6 +315,30 @@ ol {
 
   .app-button--secondary-cream:hover {
     background: rgb(250 240 230 / 10%);
+  }
+}
+
+@keyframes hero-content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-6));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-visual-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(12%) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
 

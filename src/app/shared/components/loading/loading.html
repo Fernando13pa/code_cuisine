@@ -1,0 +1,22 @@
+<section class="loading" aria-labelledby="loading-title" aria-live="polite">
+  <div class="page-container loading__inner">
+    @if (recipeService.error()) {
+      <h1 id="loading-title">We couldn't generate your recipes</h1>
+      <p>{{ recipeService.error()?.message }}</p>
+      <button class="app-button app-button--primary-green" type="button" (click)="retry()">
+        Try again
+      </button>
+    } @else {
+      <img
+        class="loading__visual"
+        src="/imgs/img-results-ai-robot.svg"
+        width="420"
+        height="320"
+        alt=""
+      />
+      <h1 id="loading-title">Your recipes are being prepared</h1>
+      <p>Our AI chef is turning your ingredients into something delicious.</p>
+      <span class="loading__dots" aria-hidden="true"></span>
+    }
+  </div>
+</section>

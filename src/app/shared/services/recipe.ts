@@ -1,11 +1,100 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { TimeoutError, firstValueFrom, timeout } from 'rxjs';
 
-import { Ingredient } from '../interfaces/ingredient';
+import { environment } from '../../../environments/environment';
+import { Ingredient, Unit } from '../interfaces/ingredient';
 import { Preferences } from '../interfaces/preferences';
-import { Recipe } from '../interfaces/recipe';
+import { ChefNumber, Recipe } from '../interfaces/recipe';
+import {
+  ApiErrorResponse,
+  Diet,
+  QuotaExceededResponse,
+  RawIngredient,
+  RawRecipe,
+  RecipeGenerationRequest,
+  RecipeGenerationResponse,
+  TimeCategory,
+} from '../interfaces/api';
+
+// La generación tarda 20-90s (Gemini + reintentos posibles).
+const REQUEST_TIMEOUT_MS = 120_000;
+
+// ---------------------------------------------------------------------------
+// Mappers: app types → API contract
+// ---------------------------------------------------------------------------
+
+const TIME_MAP: Record<string, TimeCategory> = {
+  Quick: 'quick',
+  Medium: 'medium',
+  Complex: 'elaborate',
+};
+
+const DIET_MAP: Record<string, Diet> = {
+  Vegetarian: 'vegetarian',
+  Vegan: 'vegan',
+  Keto: 'keto',
+  'No preferences': 'none',
+};
+
+// ---------------------------------------------------------------------------
+// Normalizers: raw n8n response → internal Recipe model
+// ---------------------------------------------------------------------------
+
+function normalizeIngredient(raw: RawIngredient): Ingredient {
+  return {
+    id: crypto.randomUUID(),
+    name: raw.name,
+    amount: raw.amount,
+    unit: raw.unit as Unit,
+  };
+}
+
+function normalizeRecipe(raw: RawRecipe): Recipe {
+  return {
+    id: raw.id,
+    title: raw.title,
+    cookingTime: raw.cookingTime,
+    cuisine: raw.cuisine,
+    tags: raw.tags,
+    likes: 0,
+    missingIngredientsNote: raw.missingIngredientsNote,
+    nutritionalInfo: raw.nutritionalInfo,
+    ingredients: raw.ingredients.map(normalizeIngredient),
+    extraIngredients: raw.extraIngredients.map(normalizeIngredient),
+    steps: raw.steps.map(step => ({
+      number: step.number,
+      description: step.description,
+      chef: Number(step.chef) as ChefNumber,
+      isParallel: step.isParallel,
+    })),
+  };
+}
+
+function toApiError(err: unknown): ApiErrorResponse {
+  if (err instanceof TimeoutError) {
+    return { code: 'TIMEOUT', message: 'The recipe generation took too long. Please try again.' };
+  }
+  if (err instanceof HttpErrorResponse) {
+    if (err.status === 429) {
+      const body = err.error as QuotaExceededResponse | null;
+      return { code: 'QUOTA_EXCEEDED', message: body?.message ?? "You've reached today's limit." };
+    }
+    if (err.status === 0) {
+      return { code: 'NETWORK_ERROR', message: 'Could not reach the server. Check your connection.' };
+    }
+  }
+  return { code: 'UNKNOWN_ERROR', message: 'Something went wrong. Please try again later.' };
+}
+
+// ---------------------------------------------------------------------------
+// Service
+// ---------------------------------------------------------------------------
 
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
+  private readonly http = inject(HttpClient);
+
   readonly ingredients = signal<Ingredient[]>([]);
   readonly preferences = signal<Preferences>({
     portions: 2,
@@ -16,6 +105,7 @@ export class RecipeService {
   });
   readonly results = signal<Recipe[]>([]);
   readonly isLoading = signal(false);
+  readonly error = signal<ApiErrorResponse | null>(null);
 
   setIngredients(list: Ingredient[]): void {
     this.ingredients.set(list);
@@ -25,9 +115,34 @@ export class RecipeService {
     this.preferences.set(prefs);
   }
 
-  // TODO: replace stub with n8n webhook call once workflow is configured
+  /** Genera 3 recetas a partir de los ingredientes y preferencias actuales via n8n. */
   async generate(): Promise<void> {
+    this.error.set(null);
     this.isLoading.set(true);
-    this.isLoading.set(false);
+
+    try {
+      const response = await firstValueFrom(
+        this.http
+          .post<RecipeGenerationResponse>(environment.n8nWebhookUrl, this.buildRequest())
+          .pipe(timeout(REQUEST_TIMEOUT_MS)),
+      );
+      this.results.set(response.output.recipes.map(normalizeRecipe));
+    } catch (err) {
+      this.error.set(toApiError(err));
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /** Construye el request body según el contrato Angular ↔ n8n. */
+  buildRequest(): RecipeGenerationRequest {
+    const prefs = this.preferences();
+    return {
+      ingredients: this.ingredients().map(i => i.name).join(', '),
+      portions: prefs.portions,
+      timeCategory: TIME_MAP[prefs.cookingTime ?? 'Quick'],
+      diet: DIET_MAP[prefs.diet ?? 'No preferences'],
+      numberOfChefs: prefs.cooks,
+    };
   }
 }

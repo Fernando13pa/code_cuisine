@@ -21,20 +21,25 @@
               name="ingredient-name"
               autocomplete="off"
               placeholder=""
+              required
             />
           </div>
 
           <div class="ingredient-form__field">
-            <label class="ingredient-form__label">Serving size</label>
+            <label class="ingredient-form__label" for="ingredient-amount">Serving size</label>
             <div class="ingredient-form__serving">
               <input
+                id="ingredient-amount"
                 class="ingredient-form__amount"
                 type="number"
                 [(ngModel)]="amount"
                 name="amount"
                 min="1"
+                step="any"
+                required
+                aria-label="Amount"
               />
-              <select class="ingredient-form__unit" [(ngModel)]="unit" name="unit">
+              <select class="ingredient-form__unit" [(ngModel)]="unit" name="unit" aria-label="Unit">
                 @for (u of units; track u) {
                   <option [value]="u">{{ u }}</option>
                 }
@@ -42,7 +47,7 @@
               <button
                 class="ingredient-form__add"
                 type="submit"
-                [disabled]="!name.trim()"
+                [disabled]="!isIngredientValid"
                 aria-label="Add ingredient"
               >
                 <img src="/assets/icon-plus.svg" width="18" height="18" alt="" />
@@ -59,7 +64,7 @@
         @if (ingredients().length === 0) {
           <p class="generate__empty">Add your first ingredient above.</p>
         } @else {
-          <ul class="ingredient-list" role="list">
+          <ul class="ingredient-list" aria-label="Your ingredients">
             @for (item of ingredients(); track item.id) {
               <li class="ingredient-item">
 
@@ -70,8 +75,10 @@
                       type="number"
                       [(ngModel)]="editAmount"
                       min="1"
+                      step="any"
+                      aria-label="Amount"
                     />
-                    <select class="ingredient-item__edit-unit" [(ngModel)]="editUnit">
+                    <select class="ingredient-item__edit-unit" [(ngModel)]="editUnit" aria-label="Unit">
                       @for (u of units; track u) {
                         <option [value]="u">{{ u }}</option>
                       }
@@ -81,11 +88,14 @@
                       type="text"
                       [(ngModel)]="editName"
                       (keydown.enter)="confirmEdit(item.id)"
+                      (keydown.escape)="cancelEdit()"
+                      aria-label="Ingredient name"
                     />
                     <button
                       class="ingredient-item__action"
                       type="button"
                       (click)="confirmEdit(item.id)"
+                      [disabled]="!isEditValid"
                       aria-label="Confirm"
                     >
                       <img src="/assets/icon-check.svg" width="14" height="11" alt="" />
