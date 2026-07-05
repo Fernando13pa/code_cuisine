@@ -17,7 +17,7 @@ export class GenerateRecipe {
 
   readonly units: Unit[] = ['gram', 'kg', 'ml', 'l', 'piece', 'tbsp', 'tsp'];
 
-  private readonly unitAbbr: Record<Unit, string> = {
+  private readonly unitAbbr: Partial<Record<string, string>> = {
     gram: 'g',
     kg: 'kg',
     ml: 'ml',
@@ -72,7 +72,7 @@ export class GenerateRecipe {
     this.editingId = item.id;
     this.editName = item.name;
     this.editAmount = item.amount;
-    this.editUnit = item.unit;
+    this.editUnit = item.unit as Unit;
   }
 
   confirmEdit(id: string): void {

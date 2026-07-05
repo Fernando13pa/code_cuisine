@@ -1,5 +1,4 @@
 import { Ingredient } from './ingredient';
-import { CuisineType } from './preferences';
 
 export interface NutritionalInfo {
   energyPerPortion: number;
@@ -26,7 +25,8 @@ export interface Recipe {
   id: string;
   title: string;
   cookingTime: number;
-  cuisine: CuisineType;
+  /** Freitext von der KI, z. B. "Mediterranean" oder "Comfort Food" — nicht auf die Preferences-Chips beschränkt. */
+  cuisine: string;
   tags: string[];
   /** Wird nicht von n8n geliefert, sondern lokal/Firebase verwaltet (Favoriten). */
   likes: number;

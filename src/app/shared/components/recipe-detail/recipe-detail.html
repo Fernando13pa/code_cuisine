@@ -3,12 +3,13 @@
     <div class="page-container recipe-detail__inner">
 
       <nav class="recipe-detail__back" aria-label="Back">
-        <a class="recipe-detail__back-link" routerLink="/results">
+        <a class="recipe-detail__back-link" [routerLink]="backLink()">
           <img src="/assets/icon-arrow-left.svg" width="26" height="15" alt="" />
-          <span>Recipe results</span>
+          <span>{{ backLabel() }}</span>
         </a>
       </nav>
 
+      <div class="recipe-detail__card">
       <div class="recipe-summary">
         <div class="recipe-summary__main">
           <p class="recipe-summary__time">
@@ -34,12 +35,14 @@
 
         <div class="recipe-summary__aside">
           <div class="recipe-summary__tags">
-            @for (tag of r.tags; track tag) {
+            @for (tag of dietaryTags(); track tag) {
               <span class="recipe-summary__tag">{{ tag }}</span>
             }
-            <span class="recipe-summary__tag">{{ timeCategory() }}</span>
+            @if (timeCategory()) {
+              <span class="recipe-summary__tag">{{ timeCategory() }}</span>
+            }
             <span class="recipe-summary__tag recipe-summary__tag--likes">
-              <img src="/assets/icon-heart-filled.svg" width="16" height="14" alt="" />
+              <img src="/assets/icon-heart.svg" width="16" height="14" alt="" />
               {{ r.likes }}
             </span>
           </div>
@@ -69,6 +72,7 @@
       </div>
 
       <div class="section-banner">
+        <img class="section-banner__illustration" src="/imgs/illus-hero-ingredients.svg" alt="" width="1152" height="148" />
         <h2>Ingredients</h2>
       </div>
 
@@ -78,7 +82,7 @@
           <ul>
             @for (ingredient of r.ingredients; track ingredient.id) {
               <li>
-                <span class="ingredients-columns__amount">{{ ingredient.amount }}{{ ingredient.unit }}</span>
+                <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
                 {{ ingredient.name }}
               </li>
             }
@@ -91,7 +95,7 @@
             <ul>
               @for (ingredient of r.extraIngredients; track ingredient.id) {
                 <li>
-                  <span class="ingredients-columns__amount">{{ ingredient.amount }}{{ ingredient.unit }}</span>
+                  <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
                   {{ ingredient.name }}
                 </li>
               }
@@ -105,6 +109,7 @@
       }
 
       <div class="section-banner">
+        <img class="section-banner__illustration" src="/imgs/illus-hero-directions.svg" alt="" width="1151" height="134" />
         <h2>Directions</h2>
       </div>
 
@@ -141,28 +146,28 @@
           aria-label="Mark recipe as favorite"
         >
           <img
-            [src]="isFavorited() ? '/assets/icon-heart-filled.svg' : '/assets/icon-heart.svg'"
+            [src]="isFavorited() ? '/assets/icon-heart-like%20(2).svg' : '/assets/icon-heart.svg'"
+            [class.recipe-detail__favorite-icon--liked]="isFavorited()"
             width="24"
-            height="21"
+            height="22"
             alt=""
           />
         </button>
       </div>
+      </div>
 
-    </div>
-
-    <div class="recipe-detail__promo">
-      <div class="page-container recipe-detail__promo-inner">
+      <div class="recipe-detail__promo">
         <p>Find inspiration for your next culinary adventure!</p>
         <a class="app-button app-button--primary-green app-button--compact" routerLink="/cookbook">Cookbook</a>
       </div>
-    </div>
 
-    <div class="page-container recipe-detail__generate-link">
-      <a routerLink="/generate">
-        <span>Generate new recipe</span>
-        <img src="/assets/icon-arrow-right.svg" width="26" height="15" alt="" />
-      </a>
+      <div class="recipe-detail__generate-link">
+        <a routerLink="/generate">
+          <span>Generate new recipe</span>
+          <img src="/assets/icon-arrow-right.svg" width="26" height="15" alt="" />
+        </a>
+      </div>
+
     </div>
   </section>
 }

@@ -1,42 +1,66 @@
 <section class="results" aria-labelledby="results-title">
   <div class="page-container results__inner">
-    <header class="results__header">
-      <h1 id="results-title">Your recipe results</h1>
-      <p>Three ideas made from what you already have.</p>
-    </header>
-
     @if (recipeService.results().length > 0) {
+      <header class="results-hero">
+        <h1 id="results-title">
+          <span class="results-hero__title-desktop">The recipe results</span>
+          <span class="results-hero__title-mobile">Generated recipes</span>
+        </h1>
+
+        <img
+          class="results-hero__visual"
+          src="/imgs/img-results-ai-robot.svg"
+          width="574"
+          height="222"
+          alt="A robot chef presenting a freshly prepared dish"
+        />
+
+        <div class="results-hero__intro">
+          <p>
+            We took what you have and let our AI do the thinking. Here are 3 easy recipes you can
+            make right now!
+          </p>
+
+          <div class="results-hero__chips" aria-label="Selected recipe preferences">
+            @if (cuisineLabel(); as cuisine) {
+              <span>{{ cuisine }}</span>
+            }
+            @if (timeLabel(); as time) {
+              <span>{{ time }}</span>
+            }
+          </div>
+        </div>
+      </header>
+
       <div class="results__grid">
-        @for (recipe of recipeService.results(); track recipe.id) {
+        @for (recipe of recipeService.results(); track recipe.id; let index = $index) {
           <article class="recipe-card">
-            <div class="recipe-card__visual" aria-hidden="true">
-              <img src="/imgs/img-results-ai-robot.svg" alt="" />
+            <div class="recipe-card__label">
+              <img src="/assets/icon-cuisine.svg" width="20" height="20" alt="" />
+              <span>Recipe {{ index + 1 }}</span>
             </div>
-            <div class="recipe-card__body">
-              <p class="recipe-card__meta">
-                <span>{{ recipe.cuisine }}</span>
-                <span>{{ recipe.cookingTime }} min</span>
-              </p>
-              <h2>{{ recipe.title }}</h2>
-              <ul class="recipe-card__tags" aria-label="Recipe tags">
-                @for (tag of recipe.tags; track tag) {
-                  <li>{{ tag }}</li>
-                }
-              </ul>
-              <a
-                class="app-button app-button--primary-green app-button--compact recipe-card__view"
-                [routerLink]="['/recipe', recipe.id]"
-              >
-                View
-              </a>
-            </div>
+
+            <h2>{{ recipe.title }}</h2>
+
+            <p class="recipe-card__time">
+              <img src="/assets/icon-clock.svg" width="22" height="22" alt="" />
+              <span>Cooking time: {{ recipe.cookingTime }}min</span>
+            </p>
+
+            <a class="recipe-card__view" [routerLink]="['/recipe', recipe.id]">View</a>
           </article>
         }
       </div>
+
+      <a class="results__generate" routerLink="/generate">
+        <span>Generate new recipe</span>
+        <img src="/assets/icon-arrow-right-white.svg" width="28" height="16" alt="" />
+      </a>
     } @else {
       <div class="results__empty">
-        <p>No recipes have been generated yet.</p>
-        <a class="app-button app-button--primary-green" routerLink="/generate">Add ingredients</a>
+        <h1 id="results-title">No recipes yet</h1>
+        <p>Start with a few ingredients and let our AI chef do the rest.</p>
+        <a class="app-button app-button--primary-cream" routerLink="/generate">Add ingredients</a>
       </div>
     }
   </div>

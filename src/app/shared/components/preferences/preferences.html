@@ -22,9 +22,12 @@
             [disabled]="portions() <= 1"
             aria-label="Decrease portions"
           >
-            <img src="/assets/icon-minus.svg" width="16" height="16" alt="" />
+            <img src="/assets/icon-minus.svg" width="20" height="20" alt="" />
           </button>
-          <span class="counter__value" aria-live="polite">{{ portions() }} Portions</span>
+          <span class="counter__value" aria-live="polite">
+            <span class="counter__number">{{ portions() }}</span>
+            <span>Portions</span>
+          </span>
           <button
             class="counter__btn"
             type="button"
@@ -32,7 +35,7 @@
             [disabled]="portions() >= 12"
             aria-label="Increase portions"
           >
-            <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />
+            <img src="/assets/icon-plus-square.svg" width="20" height="20" alt="" />
           </button>
         </div>
       </div>
@@ -47,9 +50,12 @@
             [disabled]="cooks() <= 1"
             aria-label="Decrease cooks"
           >
-            <img src="/assets/icon-minus.svg" width="16" height="16" alt="" />
+            <img src="/assets/icon-minus.svg" width="20" height="20" alt="" />
           </button>
-          <span class="counter__value" aria-live="polite">{{ cooks() }} {{ cooks() === 1 ? 'Person' : 'People' }}</span>
+          <span class="counter__value" aria-live="polite">
+            <span class="counter__number">{{ cooks() }}</span>
+            <span>{{ cooks() === 1 ? 'Person' : 'People' }}</span>
+          </span>
           <button
             class="counter__btn"
             type="button"
@@ -57,7 +63,7 @@
             [disabled]="cooks() >= 3"
             aria-label="Increase cooks"
           >
-            <img src="/assets/icon-plus.svg" width="16" height="16" alt="" />
+            <img src="/assets/icon-plus-square.svg" width="20" height="20" alt="" />
           </button>
         </div>
       </div>
@@ -68,7 +74,7 @@
 
       <div class="pref-group">
         <div class="pref-group__heading">
-          <img src="/assets/icon-clock.svg" width="20" height="20" alt="" />
+          <img src="/assets/icon-preference-clock.svg" width="20" height="20" alt="" />
           <span>Cooking time</span>
         </div>
         <div class="pref-group__chips" role="group" aria-label="Cooking time">
@@ -89,7 +95,7 @@
 
       <div class="pref-group">
         <div class="pref-group__heading">
-          <img src="/assets/icon-cuisine.svg" width="20" height="20" alt="" />
+          <img src="/assets/World-green.svg" width="20" height="20" alt="" />
           <span>Cuisine</span>
         </div>
         <div class="pref-group__chips" role="group" aria-label="Cuisine">
@@ -109,7 +115,7 @@
 
       <div class="pref-group">
         <div class="pref-group__heading">
-          <img src="/assets/icon-diet.svg" width="20" height="20" alt="" />
+          <img src="/assets/icon-utensils.svg" width="20" height="20" alt="" />
           <span>Diet preferences</span>
         </div>
         <div class="pref-group__chips" role="group" aria-label="Diet preferences">

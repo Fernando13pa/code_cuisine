@@ -42,7 +42,7 @@
 
     <div class="cuisine-grid">
       @for (cuisine of cuisines; track cuisine.name) {
-        <article class="cuisine-card">
+        <a class="cuisine-card" [routerLink]="['/cookbook', cuisine.slug]">
           <h2>{{ cuisine.name }} <span aria-hidden="true">{{ cuisine.emoji }}</span></h2>
           <img
             class="cuisine-card__image"
@@ -51,7 +51,7 @@
             height="400"
             [alt]="cuisine.name + ' dishes'"
           />
-        </article>
+        </a>
       }
     </div>
 

@@ -4,5 +4,6 @@ export interface Ingredient {
   id: string;
   name: string;
   amount: number;
-  unit: Unit;
+  /** String statt `Unit`: KI-generierte Rezepte liefern Freitext-Einheiten (z. B. "zehen", "prise"). */
+  unit: string;
 }

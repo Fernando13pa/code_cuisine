@@ -16,4 +16,9 @@ export class App {
   protected get isHomePage(): boolean {
     return this.router.url === '/';
   }
+
+  /** Full-bleed green pages render underneath the transparent cream header. */
+  protected get isImmersivePage(): boolean {
+    return this.isHomePage || this.router.url === '/loading' || this.router.url === '/results';
+  }
 }

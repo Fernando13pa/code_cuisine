@@ -3,9 +3,11 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError, firstValueFrom, timeout } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { Ingredient, Unit } from '../interfaces/ingredient';
+import firebaseRecipeSnapshot from '../../../../public/data/firebase-recipes.json';
+import { Ingredient } from '../interfaces/ingredient';
 import { Preferences } from '../interfaces/preferences';
 import { ChefNumber, Recipe } from '../interfaces/recipe';
+import { COOKBOOK_RECIPES } from '../data/cookbook-recipes';
 import {
   ApiErrorResponse,
   Diet,
@@ -46,7 +48,7 @@ function normalizeIngredient(raw: RawIngredient): Ingredient {
     id: crypto.randomUUID(),
     name: raw.name,
     amount: raw.amount,
-    unit: raw.unit as Unit,
+    unit: raw.unit,
   };
 }
 
@@ -56,13 +58,13 @@ function normalizeRecipe(raw: RawRecipe): Recipe {
     title: raw.title,
     cookingTime: raw.cookingTime,
     cuisine: raw.cuisine,
-    tags: raw.tags,
+    tags: raw.tags ?? [],
     likes: 0,
     missingIngredientsNote: raw.missingIngredientsNote,
     nutritionalInfo: raw.nutritionalInfo,
-    ingredients: raw.ingredients.map(normalizeIngredient),
-    extraIngredients: raw.extraIngredients.map(normalizeIngredient),
-    steps: raw.steps.map(step => ({
+    ingredients: (raw.ingredients ?? []).map(normalizeIngredient),
+    extraIngredients: (raw.extraIngredients ?? []).map(normalizeIngredient),
+    steps: (raw.steps ?? []).map(step => ({
       number: step.number,
       description: step.description,
       chef: Number(step.chef) as ChefNumber,
@@ -104,6 +106,7 @@ export class RecipeService {
     diet: null,
   });
   readonly results = signal<Recipe[]>([]);
+  readonly cookbookRecipes = signal<Recipe[]>(COOKBOOK_RECIPES);
   readonly isLoading = signal(false);
   readonly error = signal<ApiErrorResponse | null>(null);
 
@@ -115,23 +118,57 @@ export class RecipeService {
     this.preferences.set(prefs);
   }
 
+  getRecipeById(id: string | null): Recipe | null {
+    if (!id) return null;
+    return this.results().find(recipe => recipe.id === id)
+      ?? this.cookbookRecipes().find(recipe => recipe.id === id)
+      ?? null;
+  }
+
+  getCookbookRecipes(cuisine: string): Recipe[] {
+    return this.cookbookRecipes().filter(
+      recipe => recipe.cuisine.toLowerCase() === cuisine.toLowerCase(),
+    );
+  }
+
+  updateLikes(id: string, delta: number): void {
+    const update = (list: Recipe[]) =>
+      list.map(recipe => recipe.id === id ? { ...recipe, likes: recipe.likes + delta } : recipe);
+    this.results.update(update);
+    this.cookbookRecipes.update(update);
+  }
+
   /** Genera 3 recetas a partir de los ingredientes y preferencias actuales via n8n. */
   async generate(): Promise<void> {
     this.error.set(null);
     this.isLoading.set(true);
 
     try {
-      const response = await firstValueFrom(
-        this.http
-          .post<RecipeGenerationResponse>(environment.n8nWebhookUrl, this.buildRequest())
-          .pipe(timeout(REQUEST_TIMEOUT_MS)),
-      );
-      this.results.set(response.output.recipes.map(normalizeRecipe));
+      const recipes = environment.useLocalRecipeFixtures
+        ? await this.loadLocalRecipeFixtures()
+        : await this.generateWithN8n();
+
+      this.results.set(recipes.map(normalizeRecipe));
     } catch (err) {
       this.error.set(toApiError(err));
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  /** Reads the Firebase snapshot bundled with the app; no HTTP request is made. */
+  private loadLocalRecipeFixtures(): Promise<RawRecipe[]> {
+    return Promise.resolve(Object.values(firebaseRecipeSnapshot) as RawRecipe[]);
+  }
+
+  /** Production path: keeps the existing Angular -> n8n -> Gemini contract intact. */
+  private async generateWithN8n(): Promise<RawRecipe[]> {
+    const response = await firstValueFrom(
+      this.http
+        .post<RecipeGenerationResponse>(environment.n8nWebhookUrl, this.buildRequest())
+        .pipe(timeout(REQUEST_TIMEOUT_MS)),
+    );
+    return response.output.recipes;
   }
 
   /** Construye el request body según el contrato Angular ↔ n8n. */

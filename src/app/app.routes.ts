@@ -7,6 +7,7 @@ import { Loading } from './shared/components/loading/loading';
 import { Results } from './shared/components/results/results';
 import { RecipeDetail } from './shared/components/recipe-detail/recipe-detail';
 import { Cookbook } from './shared/components/cookbook/cookbook';
+import { CuisineRecipes } from './shared/components/cuisine-recipes/cuisine-recipes';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'cookbook',
     component: Cookbook,
+  },
+  {
+    path: 'cookbook/:cuisine',
+    component: CuisineRecipes,
   },
   {
     path: '**',

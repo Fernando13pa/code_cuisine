@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { RecipeService } from '../../services/recipe';
 import { ChefNumber } from '../../interfaces/recipe';
+import { Ingredient } from '../../interfaces/ingredient';
 
 function timeCategoryLabel(minutes: number): string {
   if (minutes <= 20) return 'Quick';
@@ -29,12 +30,45 @@ export class RecipeDetail {
   private readonly recipeId = this.route.snapshot.paramMap.get('id');
 
   readonly recipe = computed(
-    () => this.recipeService.results().find(r => r.id === this.recipeId) ?? null,
+    () => this.recipeService.getRecipeById(this.recipeId),
   );
 
+  readonly isCookbookRecipe = computed(() =>
+    this.recipeService.cookbookRecipes().some(item => item.id === this.recipe()?.id),
+  );
+
+  readonly backLink = computed(() =>
+    this.isCookbookRecipe() ? ['/cookbook', this.recipe()!.cuisine.toLowerCase()] : ['/results'],
+  );
+
+  readonly backLabel = computed(() =>
+    this.isCookbookRecipe() ? `${this.recipe()!.cuisine} recipes` : 'Recipe results',
+  );
+
+  /** Nur anzeigen, wenn die KI nicht schon einen gleichwertigen Tag geliefert hat (z. B. "quick"). */
   readonly timeCategory = computed(() => {
     const recipe = this.recipe();
-    return recipe ? timeCategoryLabel(recipe.cookingTime) : '';
+    if (!recipe) return '';
+    const label = timeCategoryLabel(recipe.cookingTime);
+    const alreadyTagged = recipe.tags.some(tag => tag.toLowerCase() === label.toLowerCase());
+    return alreadyTagged ? '' : label;
+  });
+
+  /** The summary design shows only dietary tags; descriptive Firebase tags stay out of the header. */
+  readonly dietaryTags = computed(() => {
+    const labels: Record<string, string> = {
+      vegetarian: 'Vegetarian',
+      vegetarisch: 'Vegetarian',
+      vegan: 'Vegan',
+      keto: 'Keto',
+    };
+
+    return this.recipe()
+      ? this.recipe()!.tags
+          .map(tag => labels[tag.toLowerCase()])
+          .filter((tag): tag is string => Boolean(tag))
+          .slice(0, 1)
+      : [];
   });
 
   /** Kochnummern, die tatsächlich in den Schritten vorkommen — bestimmt One-Cook- vs. Two/Three-Chef-Ansicht. */
@@ -59,14 +93,27 @@ export class RecipeDetail {
     return CHEF_ICONS[chef] ?? null;
   }
 
+  formatIngredientAmount(ingredient: Ingredient): string {
+    const compactUnits: Record<string, string> = {
+      gram: 'g',
+      grams: 'g',
+      kilogram: 'kg',
+      kilograms: 'kg',
+      ml: 'ml',
+      l: 'l',
+    };
+    const compactUnit = compactUnits[ingredient.unit.toLowerCase()];
+    return compactUnit
+      ? `${ingredient.amount}${compactUnit}`
+      : `${ingredient.amount} ${ingredient.unit}`;
+  }
+
   toggleFavorite(): void {
     const recipe = this.recipe();
     if (!recipe) return;
 
     const delta = this.isFavorited() ? -1 : 1;
     this.isFavorited.update(favorited => !favorited);
-    this.recipeService.results.update(list =>
-      list.map(r => (r.id === recipe.id ? { ...r, likes: r.likes + delta } : r)),
-    );
+    this.recipeService.updateLikes(recipe.id, delta);
   }
 }
