@@ -7,6 +7,8 @@
   --color-green-800: #1e5515;
   --color-green-700: #396039;
   --color-green-600: #045e04;
+  --color-green-500: #008000;
+  --color-beige: #f5f5dc;
   --color-sage-400: #c4d0c4;
   --color-sage-300: #d7dfd7;
   --color-sage-200: #dbe3db;
@@ -38,6 +40,8 @@
 
   // Typography
   --font-family-base: 'Figtree', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-family-heading: 'Ubuntu', 'Segoe UI', sans-serif;
+  --font-family-accent: 'Quicksand', 'Segoe UI', sans-serif;
   --font-size-xs: 0.875rem;
   --font-size-sm: 1rem;
   --font-size-md: 1.125rem;
@@ -51,6 +55,7 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --line-height-solid: 1;
   --line-height-tight: 1.1;
   --line-height-heading: 1.2;
   --line-height-body: 1.5;
@@ -115,7 +120,7 @@
   --button-cream-background: var(--color-cream-100);
   --button-cream-background-hover: var(--color-cream-300);
   --button-cream-background-active: var(--color-cream-200);
-  --button-cream-color: var(--color-green-600);
+  --button-cream-color: var(--color-green-500);
   --button-secondary-background: var(--color-sage-100);
   --button-secondary-background-hover: var(--color-sage-200);
   --button-disabled-opacity: 0.42;
@@ -270,6 +275,13 @@ ol {
 .app-button--primary-cream {
   color: var(--button-cream-color);
   background: var(--button-cream-background);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-solid);
+  transition:
+    color 300ms ease-out,
+    background-color 300ms ease-out;
 }
 
 .app-button--secondary-green {

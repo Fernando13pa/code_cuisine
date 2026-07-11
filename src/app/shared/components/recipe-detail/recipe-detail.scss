@@ -179,6 +179,17 @@
   margin-left: auto;
 }
 
+// Wenn es keine Extra-Zutaten gibt, füllt "Your ingredients" allein das Grid
+// und soll dann selbst zweispaltig umbrechen, statt in einer schmalen Spalte hochzuwachsen.
+.ingredients-columns__group:only-child {
+  grid-column: 1 / -1;
+
+  ul {
+    column-count: 2;
+    column-gap: var(--space-8);
+  }
+}
+
 .ingredients-columns__group h3 {
   margin-bottom: var(--space-3);
   color: var(--color-brand);
@@ -220,13 +231,29 @@
 
 .directions-list__heading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-3);
   margin-bottom: var(--space-2);
+
+  .directions-list__number { flex-shrink: 0; }
+  .directions-list__title { flex: 1; }
+  .chef-badge { flex-shrink: 0; margin-left: auto; white-space: nowrap; }
 }
 
 .directions-list__number {
-  color: var(--color-brand);
+  display: grid;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  color: var(--color-green-600);
+  background: var(--color-cream-100);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-md);
+}
+
+.directions-list__title {
+  color: var(--color-green-600);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
 }
@@ -353,6 +380,10 @@
     grid-template-columns: 1fr;
     gap: var(--space-6);
     padding-inline: var(--space-3);
+  }
+
+  .ingredients-columns__group:only-child ul {
+    column-count: 1;
   }
 
   .recipe-summary__nutrition dl {

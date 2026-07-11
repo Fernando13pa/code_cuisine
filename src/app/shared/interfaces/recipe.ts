@@ -15,6 +15,8 @@ export type ChefNumber = 1 | 2 | 3;
 
 export interface RecipeStep {
   number: number;
+  /** Kurzer Titel für den Schritt, z. B. "Cook the pasta". */
+  title: string;
   description: string;
   chef: ChefNumber;
   /** Kann parallel zum vorherigen Schritt von einem anderen Chef ausgeführt werden. */

@@ -5,6 +5,12 @@ type Input = {
   kcal: number; ingredients: Array<[string, number, string]>; steps: string[];
 };
 
+/** Curated demo steps only carry a description string; derive a short title heuristically. */
+const deriveStepTitle = (description: string): string => {
+  const words = description.replace(/\.$/, '').split(' ');
+  return words.length <= 5 ? words.join(' ') : `${words.slice(0, 5).join(' ')}…`;
+};
+
 const makeRecipe = (r: Input): Recipe => ({
   id: r.id, title: r.title, cuisine: r.cuisine, cookingTime: r.time, tags: r.tags, likes: r.likes,
   missingIngredientsNote: '',
@@ -18,6 +24,7 @@ const makeRecipe = (r: Input): Recipe => ({
   extraIngredients: [],
   steps: r.steps.map((description, i) => ({
     number: i + 1,
+    title: deriveStepTitle(description),
     description,
     chef: i % 2 === 0 ? 1 : 2,
     isParallel: false,

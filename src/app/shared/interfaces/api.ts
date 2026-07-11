@@ -28,6 +28,7 @@ export interface RawIngredient {
 /** Schritt, wie n8n ihn liefert: `chef` kommt als String (Gemini-API-Limit). */
 export interface RawRecipeStep {
   number: number;
+  title: string;
   description: string;
   chef: '1' | '2' | '3';
   isParallel: boolean;

@@ -8,6 +8,9 @@
 
 .cookbook__inner {
   max-width: 90rem;
+  // .cookbook__generate is float: right — establish a new block formatting
+  // context so this container's height (and the section's bottom padding) accounts for it.
+  display: flow-root;
 }
 
 .cookbook__back,
@@ -167,7 +170,7 @@
 
 .cookbook__generate {
   float: right;
-  margin-top: var(--space-16);
+  margin-top: var(--space-20);
   font-size: var(--font-size-md);
   animation: cookbook-reveal 620ms var(--easing-entrance) 560ms both;
 }

@@ -66,6 +66,7 @@ function normalizeRecipe(raw: RawRecipe): Recipe {
     extraIngredients: (raw.extraIngredients ?? []).map(normalizeIngredient),
     steps: (raw.steps ?? []).map(step => ({
       number: step.number,
+      title: step.title,
       description: step.description,
       chef: Number(step.chef) as ChefNumber,
       isParallel: step.isParallel,
