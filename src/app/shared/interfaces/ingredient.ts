@@ -1,4 +1,4 @@
-export type Unit = 'gram' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp';
+export type Unit = 'gram' | 'kg' | 'ml' | 'piece';
 
 export interface Ingredient {
   id: string;

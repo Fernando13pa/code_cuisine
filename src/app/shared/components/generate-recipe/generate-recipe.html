@@ -39,7 +39,14 @@
                 required
                 aria-label="Amount"
               />
-              <select class="ingredient-form__unit" [(ngModel)]="unit" name="unit" aria-label="Unit">
+              <select
+                class="ingredient-form__unit"
+                [class.ingredient-form__unit--open]="unitDropdownOpen"
+                [(ngModel)]="unit"
+                name="unit"
+                aria-label="Unit"
+                (click)="unitDropdownOpen = !unitDropdownOpen"
+              >
                 @for (u of units; track u) {
                   <option [value]="u">{{ u }}</option>
                 }
@@ -78,7 +85,13 @@
                       step="any"
                       aria-label="Amount"
                     />
-                    <select class="ingredient-item__edit-unit" [(ngModel)]="editUnit" aria-label="Unit">
+                    <select
+                      class="ingredient-item__edit-unit"
+                      [class.ingredient-item__edit-unit--open]="editUnitDropdownOpen"
+                      [(ngModel)]="editUnit"
+                      aria-label="Unit"
+                      (click)="editUnitDropdownOpen = !editUnitDropdownOpen"
+                    >
                       @for (u of units; track u) {
                         <option [value]="u">{{ u }}</option>
                       }
@@ -134,16 +147,17 @@
 
     </div>
 
-    <div class="generate__footer">
-      <button
-        class="app-button app-button--primary-green"
-        type="button"
-        [disabled]="!canContinue()"
-        (click)="next()"
-      >
-        Next step
-      </button>
-    </div>
+    @if (canContinue()) {
+      <div class="generate__footer">
+        <button
+          class="app-button app-button--primary-green"
+          type="button"
+          (click)="next()"
+        >
+          Next step
+        </button>
+      </div>
+    }
 
   </div>
 </section>

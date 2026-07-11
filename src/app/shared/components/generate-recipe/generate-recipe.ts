@@ -15,21 +15,20 @@ export class GenerateRecipe {
   private readonly router = inject(Router);
   private readonly recipeService = inject(RecipeService);
 
-  readonly units: Unit[] = ['gram', 'kg', 'ml', 'l', 'piece', 'tbsp', 'tsp'];
+  readonly units: Unit[] = ['gram', 'kg', 'ml', 'piece'];
 
   private readonly unitAbbr: Partial<Record<string, string>> = {
     gram: 'g',
     kg: 'kg',
     ml: 'ml',
-    l: 'l',
     piece: '',
-    tbsp: 'tbsp',
-    tsp: 'tsp',
   };
 
   name = '';
   amount = 100;
   unit: Unit = 'gram';
+  unitDropdownOpen = false;
+  editUnitDropdownOpen = false;
 
   editingId: string | null = null;
   editName = '';
@@ -55,13 +54,13 @@ export class GenerateRecipe {
   addIngredient(): void {
     if (!this.isIngredientValid) return;
     this.ingredients.update(list => [
-      ...list,
       {
         id: crypto.randomUUID(),
         name: this.name.trim(),
         amount: this.amount,
         unit: this.unit,
       },
+      ...list,
     ]);
     this.name = '';
     this.amount = 100;
