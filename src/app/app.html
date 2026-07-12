@@ -3,6 +3,9 @@
   [overlay]="isImmersivePage"
 ></app-header>
 
-<main>
+<main
+  [class.app-main--generate]="isGeneratePage"
+  [class.app-main--preferences]="isPreferencesPage"
+>
   <router-outlet />
 </main>

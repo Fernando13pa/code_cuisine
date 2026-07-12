@@ -8,6 +8,20 @@
           Try again
         </button>
       </div>
+    } @else if (showInsufficientIngredientsDialog()) {
+      <div class="loading-dialog" role="dialog" aria-modal="true" aria-labelledby="loading-dialog-title">
+        <div class="loading-dialog__panel">
+          <h2 id="loading-dialog-title">Ups! Not quite enough...</h2>
+          <p>
+            It looks like some ingredient quantities aren't sufficient for your selected servings.
+            Please add or adjust quantities and try again.
+          </p>
+          <a class="loading-dialog__link" routerLink="/generate">
+            <span>Go back to ingredients</span>
+            <img src="/assets/icon-arrow-right-white.svg" width="26" height="15" alt="" />
+          </a>
+        </div>
+      </div>
     } @else {
       <div class="loading__content">
         <div class="loading__visual-frame">

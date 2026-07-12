@@ -7,3 +7,33 @@
 main {
   min-height: inherit;
 }
+
+:host(.app-root--generate) {
+  min-height: auto;
+}
+
+:host(.app-root--preferences) {
+  min-height: auto;
+}
+
+:host(.app-root--generate) app-header {
+  --content-max-width: 74rem;
+}
+
+main.app-main--generate {
+  min-height: 0;
+}
+
+main.app-main--preferences {
+  min-height: 0;
+}
+
+@media (min-width: 48rem) {
+  :host(.app-root--preferences) app-header {
+    --page-padding: clamp(var(--space-16), 14vw, 18rem);
+  }
+
+  :host(.app-root--loading) app-header {
+    --page-padding: clamp(var(--space-20), 16vw, 20rem);
+  }
+}

@@ -21,6 +21,20 @@ import {
 
 // La generación tarda 20-90s (Gemini + reintentos posibles).
 const REQUEST_TIMEOUT_MS = 120_000;
+const MIN_RECIPE_INGREDIENTS = 2;
+const MIN_AMOUNT_UNITS_PER_PORTION = 80;
+const PIECE_TO_AMOUNT_UNITS = 80;
+
+function toComparableAmountUnits(ingredient: Ingredient): number {
+  const unit = ingredient.unit.toLowerCase();
+
+  if (unit === 'kg') return ingredient.amount * 1000;
+  if (unit === 'gram') return ingredient.amount;
+  if (unit === 'ml') return ingredient.amount;
+  if (unit === 'piece') return ingredient.amount * PIECE_TO_AMOUNT_UNITS;
+
+  return ingredient.amount * PIECE_TO_AMOUNT_UNITS;
+}
 
 // ---------------------------------------------------------------------------
 // Mappers: app types → API contract
@@ -137,6 +151,27 @@ export class RecipeService {
       list.map(recipe => recipe.id === id ? { ...recipe, likes: recipe.likes + delta } : recipe);
     this.results.update(update);
     this.cookbookRecipes.update(update);
+  }
+
+  /** Validates obvious ingredient issues before spending a generation request. */
+  hasInsufficientIngredientsForOverlay(): boolean {
+    if (environment.forceInsufficientIngredientsOverlay) return true;
+
+    const usableIngredients = this.ingredients().filter(
+      ingredient => ingredient.name.trim().length > 0
+        && Number.isFinite(ingredient.amount)
+        && ingredient.amount > 0,
+    );
+
+    if (usableIngredients.length < MIN_RECIPE_INGREDIENTS) return true;
+
+    const requiredAmountUnits = this.preferences().portions * MIN_AMOUNT_UNITS_PER_PORTION;
+    const availableAmountUnits = usableIngredients.reduce(
+      (total, ingredient) => total + toComparableAmountUnits(ingredient),
+      0,
+    );
+
+    return availableAmountUnits < requiredAmountUnits;
   }
 
   /** Genera 3 recetas a partir de los ingredientes y preferencias actuales via n8n. */

@@ -13,13 +13,21 @@
   margin-bottom: 4.75rem;
 }
 
+@media (min-width: 48rem) {
+  .preferences__back {
+    margin-left: calc(clamp(var(--space-16), 14vw, 18rem) - var(--page-padding));
+  }
+}
+
 .preferences__back-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   color: var(--color-green-800);
-  font-size: var(--font-size-sm);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  line-height: 0.625rem;
   text-decoration: none;
   transition: opacity var(--duration-fast) var(--easing-standard);
 
@@ -40,10 +48,10 @@
   margin-bottom: 3.25rem;
   text-align: center;
   color: var(--color-text);
-  font-size: clamp(var(--font-size-xl), 3.5vw, var(--font-size-2xl));
+  font-family: var(--font-family-accent);
+  font-size: 1.75rem;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.02em;
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-solid);
 }
 
 // ── Counters ──────────────────────────────────────────────────────────────────
@@ -64,8 +72,11 @@
 }
 
 .counter__label {
-  font-size: var(--font-size-sm);
   color: var(--color-text);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25rem;
   text-align: center;
 }
 
@@ -106,8 +117,10 @@
   align-items: center;
   gap: var(--space-2);
   min-width: auto;
+  font-family: var(--font-family-accent);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
+  line-height: 1.25rem;
   color: var(--color-text);
 }
 
@@ -130,7 +143,7 @@
   margin-right: auto;
   margin-bottom: 3.5rem;
   margin-left: auto;
-  background: var(--color-sage-200);
+  background: rgb(57 96 57 / 20%);
   border-radius: var(--radius-xl);
 }
 
@@ -148,8 +161,10 @@
   }
 
   span {
+    font-family: var(--font-family-accent);
     font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-solid);
     color: var(--color-text);
   }
 }
@@ -158,6 +173,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+}
+
+.pref-group__chips--cuisine {
+  column-gap: var(--space-2);
+  row-gap: var(--space-3);
+
+  .pref-chip {
+    padding-inline: var(--space-3);
+  }
+}
+
+@media (min-width: 64rem) {
+  .pref-group__chips--cuisine {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(max-content, 1fr));
+    column-gap: var(--space-3);
+
+    .pref-chip {
+      padding-inline: var(--space-2);
+    }
+  }
 }
 
 // ── Chips ─────────────────────────────────────────────────────────────────────
@@ -220,10 +256,12 @@
 }
 
 .pref-chip__label {
+  font-family: var(--font-family-accent);
   font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-regular);
-  color: var(--color-text);
-  line-height: 1.2;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-green-800);
+  line-height: 1.25rem;
+  text-align: center;
 }
 
 .pref-chip__hint {
@@ -238,12 +276,89 @@
 .preferences__footer {
   display: flex;
   justify-content: center;
+
+  .app-button {
+    color: var(--color-cream-100);
+    background: var(--color-green-700);
+    font-family: var(--font-family-accent);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-solid);
+    text-align: center;
+  }
+}
+
+.preferences-dialog {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  padding: clamp(var(--space-8), 10vh, var(--space-20)) var(--page-padding);
+  background: rgb(0 0 0 / 18%);
+}
+
+.preferences-dialog__panel {
+  position: relative;
+  width: min(100%, 35.5rem);
+  padding: var(--space-10) var(--space-16) var(--space-12);
+  color: var(--color-text-inverse);
+  background: var(--color-green-700);
+  border-radius: var(--radius-xl);
+}
+
+.preferences-dialog__close {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-8);
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+.preferences-dialog h2 {
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading);
+}
+
+.preferences-dialog p {
+  max-width: 25rem;
+  margin-top: var(--space-5);
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.preferences-dialog__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-solid);
+  text-decoration: none;
 }
 
 // ── Responsive ────────────────────────────────────────────────────────────────
 
 @media (max-width: 47.999rem) {
   .preferences {
+    --page-padding: clamp(1rem, 4.45vw, 4rem);
     padding-block: var(--space-4) var(--space-10);
   }
 
@@ -258,18 +373,18 @@
   .preferences__title {
     margin-bottom: var(--space-6);
     font-size: var(--font-size-xl);
-    text-align: left;
+    text-align: center;
   }
 
   .preferences__counters {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-6);
     margin-bottom: var(--space-8);
   }
 
   .counter {
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-3);
   }
 
@@ -289,5 +404,24 @@
 
   .preferences__footer .app-button {
     width: 100%;
+  }
+
+  .preferences-dialog {
+    padding-top: var(--space-10);
+  }
+
+  .preferences-dialog__panel {
+    padding: var(--space-8) var(--space-6) var(--space-10);
+  }
+}
+
+@media (max-width: 37.5rem) {
+  .preferences__title {
+    text-align: left;
+  }
+
+  .preferences__counters,
+  .counter {
+    align-items: flex-start;
   }
 }

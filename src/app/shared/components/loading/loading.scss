@@ -82,6 +82,50 @@ h1 {
   }
 }
 
+.loading-dialog {
+  width: min(100%, 35.5rem);
+}
+
+.loading-dialog__panel {
+  position: relative;
+  width: min(100%, 35.5rem);
+  padding: var(--space-10) var(--space-16) var(--space-12);
+  color: var(--color-text-inverse);
+  background: var(--color-green-700);
+  border-radius: var(--radius-xl);
+}
+
+.loading-dialog h2 {
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading);
+}
+
+.loading-dialog p {
+  max-width: 25rem;
+  margin-top: var(--space-5);
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.loading-dialog__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  color: inherit;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-solid);
+  text-decoration: none;
+}
+
 @keyframes loading-dot {
   0%,
   60%,
@@ -115,5 +159,13 @@ h1 {
 
   .loading__error p {
     font-size: var(--font-size-sm);
+  }
+
+  .loading-dialog {
+    width: 100%;
+  }
+
+  .loading-dialog__panel {
+    padding: var(--space-8) var(--space-6) var(--space-10);
   }
 }

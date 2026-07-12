@@ -32,9 +32,10 @@
   grid-area: title;
   align-self: end;
   color: var(--color-text-inverse);
-  font-size: clamp(var(--font-size-3xl), 3vw, 3rem);
-  font-weight: var(--font-weight-regular);
-  line-height: 1.05;
+  font-family: var(--font-family-accent);
+  font-size: clamp(var(--font-size-3xl), 4vw, 3.375rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 4.0625rem;
 }
 
 .results-hero__title-mobile {
@@ -42,11 +43,24 @@
 }
 
 .results-hero__visual {
+  display: block;
   grid-area: visual;
   width: 100%;
+  max-width: 35.875rem;
   aspect-ratio: 574 / 222;
-  object-fit: cover;
   border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.results-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.results-hero__image--mobile {
+  display: none;
 }
 
 .results-hero__intro {
@@ -55,8 +69,11 @@
 
   p {
     max-width: 43rem;
-    font-size: clamp(var(--font-size-md), 1.7vw, var(--font-size-xl));
-    line-height: 1.3;
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-accent);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
   }
 }
 
@@ -68,10 +85,14 @@
 
   span {
     padding: var(--space-1) var(--space-4);
-    color: var(--color-green-600);
+    color: var(--color-green-800);
     background: var(--color-cream-100);
     border-radius: var(--radius-pill);
-    font-size: var(--font-size-lg);
+    font-family: var(--font-family-accent);
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    text-align: center;
   }
 }
 
@@ -89,7 +110,7 @@
   align-items: flex-start;
   padding: var(--space-6);
   color: var(--color-text);
-  background: var(--color-panel-subtle);
+  background: var(--color-sage-200);
   border-radius: var(--radius-xl);
   animation: result-card-enter 650ms var(--easing-entrance) both;
 
@@ -103,9 +124,11 @@
 
   h2 {
     margin-top: var(--space-4);
-    font-size: clamp(var(--font-size-xl), 2.2vw, 1.75rem);
-    font-weight: var(--font-weight-regular);
-    line-height: 1.25;
+    color: var(--color-green-900);
+    font-family: var(--font-family-accent);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
   }
 }
 
@@ -118,12 +141,19 @@
 }
 
 .recipe-card__label {
-  font-size: var(--font-size-lg);
+  color: var(--color-green-800);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
 }
 
 .recipe-card__time {
   margin-top: var(--space-5);
-  font-size: var(--font-size-md);
+  color: var(--color-green-700);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
 }
 
 .recipe-card__view {
@@ -133,11 +163,14 @@
   justify-content: center;
   padding-inline: var(--space-8);
   margin-top: auto;
-  color: var(--color-green-600);
+  color: var(--color-green-500);
   background: var(--color-cream-050);
-  font-size: var(--font-size-lg);
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.25rem;
+  text-align: center;
   text-decoration: none;
-  transition: background-color var(--duration-normal) var(--easing-standard);
 
   &:hover {
     background: var(--color-cream-300);
@@ -238,6 +271,24 @@
     border-radius: var(--radius-xl);
   }
 
+  .results-hero__image--desktop {
+    display: none;
+  }
+
+  .results-hero__image--mobile {
+    display: block;
+    aspect-ratio: 574 / 222;
+  }
+}
+
+@media (max-width: 37.5rem) {
+  .results-hero__visual {
+    max-width: 21.25rem;
+    aspect-ratio: 340 / 131;
+  }
+}
+
+@media (max-width: 47.999rem) {
   .results-hero__intro p {
     font-size: var(--font-size-sm);
     line-height: 1.35;
