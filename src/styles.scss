@@ -311,6 +311,31 @@ ol {
   pointer-events: none;
 }
 
+.app-root--recipe-detail .recipe-detail__fold-toggle { display: none; }
+
+@media (max-width: 47.999rem) {
+  .app-root--recipe-detail .recipe-detail__fold--closed { display: none; }
+  .app-root--recipe-detail .recipe-detail__fold-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    width: 100%;
+    margin: 0 0 var(--space-10);
+    color: var(--color-green-700);
+    background: transparent;
+    border: 0;
+    font: inherit;
+  }
+  .app-root--recipe-detail .recipe-detail__fold-toggle span {
+    width: 0;
+    height: 0;
+    border-inline: .4rem solid transparent;
+    border-top: .45rem solid currentColor;
+  }
+  .app-root--recipe-detail .recipe-detail__fold-caret--open { transform: rotate(180deg); }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .app-button--primary-green:hover {
     background: var(--button-primary-background-hover);

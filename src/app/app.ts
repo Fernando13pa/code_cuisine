@@ -27,6 +27,11 @@ export class App {
     return this.isLoadingPage;
   }
 
+  @HostBinding('class.app-root--recipe-detail')
+  protected get isRecipeDetailRoot(): boolean {
+    return this.isRecipeDetailPage;
+  }
+
   /** Indicates whether the full-screen landing page is currently active. */
   protected get isHomePage(): boolean {
     return this.router.url === '/';
@@ -45,6 +50,10 @@ export class App {
   /** Loading keeps the immersive background but uses adjusted header spacing. */
   protected get isLoadingPage(): boolean {
     return this.router.url === '/loading';
+  }
+
+  protected get isRecipeDetailPage(): boolean {
+    return this.router.url.startsWith('/recipe/');
   }
 
   /** Full-bleed green pages render underneath the transparent cream header. */

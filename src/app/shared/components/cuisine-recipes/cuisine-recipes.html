@@ -9,7 +9,10 @@
     </nav>
 
     <header class="cuisine-recipes__banner">
-      <img [src]="cuisine.illustration" alt="" />
+      <picture>
+        <source media="(max-width: 48rem)" [srcset]="cuisine.mobileIllustration" />
+        <img [src]="cuisine.illustration" alt="" />
+      </picture>
       <h1 id="cuisine-title">{{ cuisine.name }}</h1>
     </header>
 

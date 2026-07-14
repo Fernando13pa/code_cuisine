@@ -20,12 +20,22 @@ main {
   --content-max-width: 74rem;
 }
 
+:host(.app-root--recipe-detail) app-header {
+  --content-max-width: 79.5rem;
+}
+
 main.app-main--generate {
   min-height: 0;
 }
 
 main.app-main--preferences {
   min-height: 0;
+}
+
+@media (max-width: 21.875rem) {
+  :host(.app-root--recipe-detail) {
+    --page-padding: 0.125rem;
+  }
 }
 
 @media (min-width: 48rem) {

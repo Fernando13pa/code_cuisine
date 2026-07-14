@@ -82,6 +82,8 @@ export class RecipeDetail {
 
   /** Lokaler Favoriten-Zustand. TODO: sobald Firebase angebunden ist, hier persistieren. */
   readonly isFavorited = signal(false);
+  readonly ingredientsOpen = signal(false);
+  readonly directionsOpen = signal(false);
 
   constructor() {
     if (!this.recipeId || !this.recipe()) {
@@ -115,5 +117,13 @@ export class RecipeDetail {
     const delta = this.isFavorited() ? -1 : 1;
     this.isFavorited.update(favorited => !favorited);
     this.recipeService.updateLikes(recipe.id, delta);
+  }
+
+  toggleIngredients(): void {
+    this.ingredientsOpen.update(open => !open);
+  }
+
+  toggleDirections(): void {
+    this.directionsOpen.update(open => !open);
   }
 }
