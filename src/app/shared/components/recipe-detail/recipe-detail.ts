@@ -33,17 +33,9 @@ export class RecipeDetail {
     () => this.recipeService.getRecipeById(this.recipeId),
   );
 
-  readonly isCookbookRecipe = computed(() =>
-    this.recipeService.cookbookRecipes().some(item => item.id === this.recipe()?.id),
-  );
+  readonly backLink = computed(() => ['/results']);
 
-  readonly backLink = computed(() =>
-    this.isCookbookRecipe() ? ['/cookbook', this.recipe()!.cuisine.toLowerCase()] : ['/results'],
-  );
-
-  readonly backLabel = computed(() =>
-    this.isCookbookRecipe() ? `${this.recipe()!.cuisine} recipes` : 'Recipe results',
-  );
+  readonly backLabel = computed(() => 'Recipe results');
 
   /** Nur anzeigen, wenn die KI nicht schon einen gleichwertigen Tag geliefert hat (z. B. "quick"). */
   readonly timeCategory = computed(() => {

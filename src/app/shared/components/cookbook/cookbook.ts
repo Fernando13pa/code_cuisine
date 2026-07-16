@@ -6,6 +6,7 @@ interface CuisineCard {
   name: string;
   emoji: string;
   image: string;
+  mobileImage?: string;
 }
 
 interface PopularRecipe {
@@ -24,19 +25,19 @@ interface PopularRecipe {
 export class Cookbook {
   readonly popularRecipes: PopularRecipe[] = [
     {
-      id: 'pasta-spinach-tomatoes',
+      id: 'italian-spinach-tomato-pasta',
       title: 'Pasta with spinach and cherry tomatoes',
       cookingTime: 20,
       likes: 66,
     },
     {
-      id: 'vegan-paleo-bars',
+      id: 'gourmet-truffle-tagliatelle',
       title: 'Low Carb Vegan No-Bake Paleo Bars',
       cookingTime: 35,
       likes: 57,
     },
     {
-      id: 'schnitzel-potato-salad',
+      id: 'german-schnitzel-potato-salad',
       title: 'Schnitzel with warm potato salad',
       cookingTime: 45,
       likes: 49,
@@ -51,4 +52,16 @@ export class Cookbook {
     { slug: 'indian', name: 'Indian cuisine', emoji: '🍛', image: '/imgs/Indian.svg' },
     { slug: 'fusion', name: 'Fusion cuisine', emoji: '🍢', image: '/imgs/Fusion.svg' },
   ];
+
+  mobileImage(cuisine: CuisineCard): string {
+    const images: Record<string, string> = {
+      italian: '/imgs/italien-mobile.svg',
+      german: '/imgs/German-mobile.svg',
+      japanese: '/imgs/japanese-mobile.svg',
+      gourmet: '/imgs/gourmet-mobile.svg',
+      indian: '/imgs/indian-mobile.svg',
+      fusion: '/imgs/fusion-mobile.svg',
+    };
+    return images[cuisine.slug] ?? cuisine.image;
+  }
 }

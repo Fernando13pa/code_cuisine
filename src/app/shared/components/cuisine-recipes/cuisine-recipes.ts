@@ -9,11 +9,11 @@ interface CuisineDefinition {
 }
 
 const CUISINES: Record<string, CuisineDefinition> = {
-  italian: { name: 'Italian cuisine', illustration: '/imgs/illus-hero-italian.svg', mobileIllustration: '/imgs/illus-hero-italien-mobile.svg' },
-  german: { name: 'German cuisine', illustration: '/imgs/illus-hero-german.svg', mobileIllustration: '/imgs/illu-hero-german-mobile.svg' },
-  japanese: { name: 'Japanese cuisine', illustration: '/imgs/illus-hero-japanese.svg', mobileIllustration: '/imgs/illus-hero-jamanese-mobile.svg' },
+  italian: { name: 'Italian cuisine', illustration: '/imgs/illus-hero-italian.svg', mobileIllustration: '/imgs/illus-hero-italian-mobile.svg' },
+  german: { name: 'German cuisine', illustration: '/imgs/illus-hero-german.svg', mobileIllustration: '/imgs/illus-hero-german-mobile.svg' },
+  japanese: { name: 'Japanese cuisine', illustration: '/imgs/illus-hero-japanese.svg', mobileIllustration: '/imgs/illus-hero-japanese-mobile.svg' },
   gourmet: { name: 'Gourmet cuisine', illustration: '/imgs/illus-hero-gourmet.svg', mobileIllustration: '/imgs/illus-hero-gourmet-mobile.svg' },
-  indian: { name: 'Indian cuisine', illustration: '/imgs/illus-indian-left.svg', mobileIllustration: '/imgs/illus-hero-indian-mobile.svg' },
+  indian: { name: 'Indian cuisine', illustration: '/imgs/illus-hero-indian.svg', mobileIllustration: '/imgs/illus-hero-indian-mobile.svg' },
   fusion: { name: 'Fusion cuisine', illustration: '/imgs/illus-hero-fusion.svg', mobileIllustration: '/imgs/illus-hero-fusion-mobile.svg' },
 };
 

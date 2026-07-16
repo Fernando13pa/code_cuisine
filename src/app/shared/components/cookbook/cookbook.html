@@ -22,7 +22,7 @@
 
         <div class="popular__scroller">
           @for (recipe of popularRecipes; track recipe.id) {
-            <article class="popular-card">
+            <a class="popular-card" [routerLink]="['/recipe', recipe.id]">
               <div class="popular-card__meta">
                 <span class="popular-card__time">
                   <img src="/assets/icon-clock.svg" width="16" height="16" alt="" />
@@ -34,7 +34,7 @@
                 </span>
               </div>
               <h3>{{ recipe.title }}</h3>
-            </article>
+            </a>
           }
         </div>
       </section>
@@ -44,13 +44,14 @@
       @for (cuisine of cuisines; track cuisine.name) {
         <a class="cuisine-card" [routerLink]="['/cookbook', cuisine.slug]">
           <h2>{{ cuisine.name }} <span aria-hidden="true">{{ cuisine.emoji }}</span></h2>
-          <img
-            class="cuisine-card__image"
-            [src]="cuisine.image"
-            width="400"
-            height="400"
-            [alt]="cuisine.name + ' dishes'"
-          />
+          <picture>
+            <source media="(max-width: 48rem)" [srcset]="mobileImage(cuisine)" />
+            <img
+              class="cuisine-card__image"
+              [src]="cuisine.image"
+              [alt]="cuisine.name + ' dishes'"
+            />
+          </picture>
         </a>
       }
     </div>

@@ -32,6 +32,11 @@ export class App {
     return this.isRecipeDetailPage;
   }
 
+  @HostBinding('class.app-root--cuisine-recipes')
+  protected get isCuisineRecipesRoot(): boolean {
+    return this.isCuisineRecipesPage;
+  }
+
   /** Indicates whether the full-screen landing page is currently active. */
   protected get isHomePage(): boolean {
     return this.router.url === '/';
@@ -54,6 +59,10 @@ export class App {
 
   protected get isRecipeDetailPage(): boolean {
     return this.router.url.startsWith('/recipe/');
+  }
+
+  protected get isCuisineRecipesPage(): boolean {
+    return /^\/cookbook\/[^/]+/.test(this.router.url);
   }
 
   /** Full-bleed green pages render underneath the transparent cream header. */
