@@ -38,35 +38,40 @@ export class GenerateRecipe {
   readonly ingredients = signal<Ingredient[]>(this.recipeService.ingredients());
   readonly canContinue = computed(() => this.ingredients().length > 0);
 
+  /** True when the new-ingredient form fields hold a valid entry. */
   get isIngredientValid(): boolean {
     return this.name.trim().length > 0 && this.isValidAmount(this.amount);
   }
 
+  /** True when the in-place edit form fields hold a valid entry. */
   get isEditValid(): boolean {
     return this.editName.trim().length > 0 && this.isValidAmount(this.editAmount);
   }
 
+  /** Formats an ingredient's amount with its unit abbreviation, e.g. "100g". */
   formatAmount(item: Ingredient): string {
     const abbr = this.unitAbbr[item.unit];
     return abbr ? `${item.amount}${abbr}` : `${item.amount}`;
   }
 
+  /** Adds the current form entry to the ingredient list and resets the form. */
   addIngredient(): void {
     if (!this.isIngredientValid) return;
     this.ingredients.update(list => [
-      {
-        id: crypto.randomUUID(),
-        name: this.name.trim(),
-        amount: this.amount,
-        unit: this.unit,
-      },
+      { id: crypto.randomUUID(), name: this.name.trim(), amount: this.amount, unit: this.unit },
       ...list,
     ]);
+    this.resetIngredientForm();
+  }
+
+  /** Clears the new-ingredient form back to its default values. */
+  private resetIngredientForm(): void {
     this.name = '';
     this.amount = 100;
     this.unit = 'gram';
   }
 
+  /** Loads an existing ingredient into the edit form. */
   startEdit(item: Ingredient): void {
     this.editingId = item.id;
     this.editName = item.name;
@@ -74,6 +79,7 @@ export class GenerateRecipe {
     this.editUnit = item.unit as Unit;
   }
 
+  /** Applies the edit form's values to the ingredient being edited. */
   confirmEdit(id: string): void {
     if (!this.isEditValid) return;
     this.ingredients.update(list =>
@@ -86,20 +92,24 @@ export class GenerateRecipe {
     this.editingId = null;
   }
 
+  /** Closes the edit form without saving changes. */
   cancelEdit(): void {
     this.editingId = null;
   }
 
+  /** Removes an ingredient from the list. */
   removeIngredient(id: string): void {
     this.ingredients.update(list => list.filter(i => i.id !== id));
   }
 
+  /** Saves the ingredient list and navigates to the Preferences step. */
   next(): void {
     if (!this.canContinue()) return;
     this.recipeService.setIngredients(this.ingredients());
     this.router.navigate(['/preferences']);
   }
 
+  /** True for finite, positive amounts. */
   private isValidAmount(value: number): boolean {
     return Number.isFinite(value) && value > 0;
   }

@@ -2,7 +2,7 @@
   <div class="page-container cuisine-recipes__inner">
     <nav class="cuisine-recipes__top" aria-label="Page actions">
       <a class="cuisine-recipes__back" routerLink="/cookbook">
-        <img src="/assets/icon-arrow-left.svg" width="24" height="14" alt="" />
+        <img src="assets/icon-arrow-left.svg" width="24" height="14" alt="" />
         <span>Cookbook</span>
       </a>
       <a class="app-button app-button--primary-green cuisine-recipes__generate--top" routerLink="/generate">Generate a recipe</a>
@@ -22,7 +22,7 @@
           <span class="cuisine-recipe__number">{{ (currentPage() - 1) * 15 + index + 1 }}.</span>
           <a class="cuisine-recipe__content" [routerLink]="['/recipe', recipe.id]">
             <p class="cuisine-recipe__time">
-              <img src="/assets/icon-clock.svg" width="18" height="18" alt="" />
+              <img src="assets/icon-clock.svg" width="18" height="18" alt="" />
               Cooking time: {{ recipe.cookingTime }}min
             </p>
             <h2>{{ recipe.title }}</h2>
@@ -32,11 +32,11 @@
               <span>{{ tag }}</span>
             }
             <span>
-              <img src="/assets/icon-heart.svg" width="18" height="16" alt="" />{{ recipe.likes }}
+              <img src="assets/icon-heart.svg" width="18" height="16" alt="" />{{ recipe.likes }}
             </span>
           </div>
           <a class="cuisine-recipe__open" [routerLink]="['/recipe', recipe.id]" [attr.aria-label]="'Open ' + recipe.title">
-            <img src="/assets/icon-arrow-right.svg" width="26" height="15" alt="" />
+            <img src="assets/icon-arrow-right.svg" width="26" height="15" alt="" />
           </a>
         </li>
       }

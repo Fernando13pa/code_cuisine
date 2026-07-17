@@ -9,12 +9,12 @@ interface CuisineDefinition {
 }
 
 const CUISINES: Record<string, CuisineDefinition> = {
-  italian: { name: 'Italian cuisine', illustration: '/imgs/illus-hero-italian.svg', mobileIllustration: '/imgs/illus-hero-italian-mobile.svg' },
-  german: { name: 'German cuisine', illustration: '/imgs/illus-hero-german.svg', mobileIllustration: '/imgs/illus-hero-german-mobile.svg' },
-  japanese: { name: 'Japanese cuisine', illustration: '/imgs/illus-hero-japanese.svg', mobileIllustration: '/imgs/illus-hero-japanese-mobile.svg' },
-  gourmet: { name: 'Gourmet cuisine', illustration: '/imgs/illus-hero-gourmet.svg', mobileIllustration: '/imgs/illus-hero-gourmet-mobile.svg' },
-  indian: { name: 'Indian cuisine', illustration: '/imgs/illus-hero-indian.svg', mobileIllustration: '/imgs/illus-hero-indian-mobile.svg' },
-  fusion: { name: 'Fusion cuisine', illustration: '/imgs/illus-hero-fusion.svg', mobileIllustration: '/imgs/illus-hero-fusion-mobile.svg' },
+  italian: { name: 'Italian cuisine', illustration: 'imgs/illus-hero-italian.svg', mobileIllustration: 'imgs/illus-hero-italian-mobile.svg' },
+  german: { name: 'German cuisine', illustration: 'imgs/illus-hero-german.svg', mobileIllustration: 'imgs/illus-hero-german-mobile.svg' },
+  japanese: { name: 'Japanese cuisine', illustration: 'imgs/illus-hero-japanese.svg', mobileIllustration: 'imgs/illus-hero-japanese-mobile.svg' },
+  gourmet: { name: 'Gourmet cuisine', illustration: 'imgs/illus-hero-gourmet.svg', mobileIllustration: 'imgs/illus-hero-gourmet-mobile.svg' },
+  indian: { name: 'Indian cuisine', illustration: 'imgs/illus-hero-indian.svg', mobileIllustration: 'imgs/illus-hero-indian-mobile.svg' },
+  fusion: { name: 'Fusion cuisine', illustration: 'imgs/illus-hero-fusion.svg', mobileIllustration: 'imgs/illus-hero-fusion-mobile.svg' },
 };
 
 const PAGE_SIZE = 15;
@@ -34,8 +34,11 @@ export class CuisineRecipes {
   protected readonly recipes = this.recipeService.getCookbookRecipes(this.slug);
 
   protected readonly currentPage = signal(1);
+
+  /** Total number of pages needed to show all of this cuisine's recipes. */
   protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.recipes.length / PAGE_SIZE)));
 
+  /** The slice of recipes to show for the current page. */
   protected readonly pagedRecipes = computed(() => {
     const start = (this.currentPage() - 1) * PAGE_SIZE;
     return this.recipes.slice(start, start + PAGE_SIZE);
@@ -58,14 +61,17 @@ export class CuisineRecipes {
     return result;
   });
 
+  /** Moves to a page, clamped to the valid page range. */
   goToPage(page: number): void {
     this.currentPage.set(Math.min(Math.max(page, 1), this.totalPages()));
   }
 
+  /** Moves to the previous page, if any. */
   previousPage(): void {
     this.goToPage(this.currentPage() - 1);
   }
 
+  /** Moves to the next page, if any. */
   nextPage(): void {
     this.goToPage(this.currentPage() + 1);
   }

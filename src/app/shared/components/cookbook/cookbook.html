@@ -1,7 +1,7 @@
 <section class="cookbook" aria-labelledby="cookbook-title">
   <div class="page-container cookbook__inner">
     <a class="cookbook__back" routerLink="/">
-      <img src="/assets/icon-arrow-left.svg" width="24" height="14" alt="" />
+      <img src="assets/icon-arrow-left.svg" width="24" height="14" alt="" />
       <span>Back</span>
     </a>
 
@@ -17,7 +17,7 @@
       <section class="popular" aria-labelledby="popular-title">
         <h2 id="popular-title">
           Most liked recipes
-          <img src="/assets/icon-heart.svg" width="25" height="23" alt="" />
+          <img src="assets/icon-heart.svg" width="25" height="23" alt="" />
         </h2>
 
         <div class="popular__scroller">
@@ -25,11 +25,11 @@
             <a class="popular-card" [routerLink]="['/recipe', recipe.id]">
               <div class="popular-card__meta">
                 <span class="popular-card__time">
-                  <img src="/assets/icon-clock.svg" width="16" height="16" alt="" />
+                  <img src="assets/icon-clock.svg" width="16" height="16" alt="" />
                   Cooking time: {{ recipe.cookingTime }}min
                 </span>
                 <span class="popular-card__likes">
-                  <img src="/assets/icon-heart.svg" width="16" height="15" alt="" />
+                  <img src="assets/icon-heart.svg" width="16" height="15" alt="" />
                   {{ recipe.likes }}
                 </span>
               </div>
@@ -58,7 +58,7 @@
 
     <a class="cookbook__generate" routerLink="/generate">
       <span>Generate new recipe</span>
-      <img src="/assets/icon-arrow-right.svg" width="25" height="14" alt="" />
+      <img src="assets/icon-arrow-right.svg" width="25" height="14" alt="" />
     </a>
   </div>
 </section>

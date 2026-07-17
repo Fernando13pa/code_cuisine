@@ -6,10 +6,10 @@
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
       "position": [
-        -544,
-        -16
+        0,
+        0
       ],
-      "id": "b2e79101-6bb6-405d-88a0-0f94832350f4",
+      "id": "842a023e-d862-4e88-8811-755ab6a657a7",
       "name": "Error Trigger"
     },
     {
@@ -23,15 +23,15 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        -336,
-        -16
+        208,
+        0
       ],
-      "id": "a1da5e03-7ed0-46b7-be2b-6f512f150be2",
+      "id": "4d26b737-01f8-46af-bbe0-0a77d7d15fc2",
       "name": "Send an Email",
       "webhookId": "5648adad-d127-497c-8de6-6da5d48a656e",
       "credentials": {
         "smtp": {
-          "id": "LignVihYDrp4mRqe",
+          "id": "T1JBumQxVMbSKLLb",
           "name": "SMTP account"
         }
       }
@@ -57,12 +57,12 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "325fb2ed-3670-4b0f-aa14-7cf985614e55",
+  "versionId": "97242594-0dac-424e-b02c-4b2ce45246a3",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "be35b0b1c154309ad387307ab72111b437e2cd3904d48e23cfeb33e86728f18e"
+    "instanceId": "a03d19fe940280a75307c6014281bfff927d3d6353fff9d02fccd323242a8bd4"
   },
   "nodeGroups": [],
-  "id": "n6NVYKWPUfLG4RLN",
+  "id": "XYUPmrqnSu7ZXlBu",
   "tags": []
 }

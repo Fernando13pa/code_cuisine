@@ -1,4 +1,5 @@
-import { Recipe } from '../interfaces/recipe';
+import { Ingredient } from '../interfaces/ingredient';
+import { NutritionalInfo, Recipe, RecipeStep } from '../interfaces/recipe';
 
 type Input = {
   id: string; title: string; cuisine: string; time: number; tags: string[]; likes: number;
@@ -11,24 +12,36 @@ const deriveStepTitle = (description: string): string => {
   return words.length <= 5 ? words.join(' ') : `${words.slice(0, 5).join(' ')}…`;
 };
 
-const makeRecipe = (r: Input): Recipe => ({
-  id: r.id, title: r.title, cuisine: r.cuisine, cookingTime: r.time, tags: r.tags, likes: r.likes,
-  missingIngredientsNote: '',
-  nutritionalInfo: {
-    energyPerPortion: r.kcal, proteinPerPortion: Math.round(r.kcal / 18),
-    fatPerPortion: Math.round(r.kcal / 28), carbsPerPortion: Math.round(r.kcal / 9),
-    energyTotal: r.kcal * 2, proteinTotal: Math.round(r.kcal / 9),
-    fatTotal: Math.round(r.kcal / 14), carbsTotal: Math.round(r.kcal / 4.5),
-  },
-  ingredients: r.ingredients.map(([name, amount, unit], i) => ({ id: `${r.id}-${i}`, name, amount, unit })),
-  extraIngredients: [],
-  steps: r.steps.map((description, i) => ({
+/** Fakes a plausible macro breakdown from a single kcal figure. */
+const deriveNutritionalInfo = (kcal: number): NutritionalInfo => ({
+  energyPerPortion: kcal, proteinPerPortion: Math.round(kcal / 18),
+  fatPerPortion: Math.round(kcal / 28), carbsPerPortion: Math.round(kcal / 9),
+  energyTotal: kcal * 2, proteinTotal: Math.round(kcal / 9),
+  fatTotal: Math.round(kcal / 14), carbsTotal: Math.round(kcal / 4.5),
+});
+
+/** Turns the compact `[name, amount, unit]` tuples into full Ingredient objects. */
+const toDemoIngredients = (id: string, ingredients: Input['ingredients']): Ingredient[] =>
+  ingredients.map(([name, amount, unit], i) => ({ id: `${id}-${i}`, name, amount, unit }));
+
+/** Turns plain step descriptions into RecipeSteps, alternating chef 1/2. */
+const toDemoSteps = (descriptions: string[]): RecipeStep[] =>
+  descriptions.map((description, i) => ({
     number: i + 1,
     title: deriveStepTitle(description),
     description,
     chef: i % 2 === 0 ? 1 : 2,
     isParallel: false,
-  })),
+  }));
+
+/** Builds a full Recipe from the compact curated/filler recipe shorthand. */
+const makeRecipe = (r: Input): Recipe => ({
+  id: r.id, title: r.title, cuisine: r.cuisine, cookingTime: r.time, tags: r.tags, likes: r.likes,
+  missingIngredientsNote: '',
+  nutritionalInfo: deriveNutritionalInfo(r.kcal),
+  ingredients: toDemoIngredients(r.id, r.ingredients),
+  extraIngredients: [],
+  steps: toDemoSteps(r.steps),
 });
 
 const CURATED_RECIPES: Recipe[] = [
@@ -166,44 +179,75 @@ interface CuisineComponents {
 
 const capitalize = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);
 
+interface FillerPick { protein: string; sauce: string; carb: string; vegetable: string; }
+interface FillerStats { time: number; likes: number; kcal: number; }
+
+/** Cycles through a cuisine's protein/sauce/carb/vegetable pools for filler recipe #i. */
+function pickFillerIngredients(components: CuisineComponents, i: number): FillerPick {
+  const { proteins, sauces, carbs, vegetables } = components;
+  return {
+    protein: proteins[i % proteins.length],
+    sauce: sauces[Math.floor(i / proteins.length) % sauces.length],
+    carb: carbs[Math.floor(i / (proteins.length * sauces.length)) % carbs.length],
+    vegetable: vegetables[i % vegetables.length],
+  };
+}
+
+/** Deterministic, varied-looking stats for filler recipe #i. */
+function fillerStats(i: number): FillerStats {
+  return {
+    time: 15 + ((i * 7) % 40),
+    likes: 20 + ((i * 13) % 70),
+    kcal: 350 + ((i * 37) % 400),
+  };
+}
+
+/** Tags derived from the picked protein and the cooking time. */
+function fillerTags(pick: FillerPick, time: number, vegetarianProteins: Set<string>): string[] {
+  const tags: string[] = [];
+  if (vegetarianProteins.has(pick.protein)) tags.push('Vegetarian');
+  if (time <= 20) tags.push('Quick');
+  return tags;
+}
+
+/** The four-ingredient shorthand list for a filler recipe. */
+function fillerIngredients(pick: FillerPick, pantryItem: string): Input['ingredients'] {
+  const { carb, protein, vegetable } = pick;
+  return [[carb, 250, 'gram'], [protein, 200, 'gram'], [vegetable, 150, 'gram'], [pantryItem, 2, 'tbsp']];
+}
+
+/** The four generic prep steps for a filler recipe. */
+function fillerSteps(pick: FillerPick): string[] {
+  const { carb, protein, vegetable, sauce } = pick;
+  return [
+    `Prepare the ${carb} according to the package instructions.`,
+    `Cook the ${protein} until done, then season well.`,
+    `Add the ${vegetable} and cook briefly until tender.`,
+    `Stir through the ${sauce} sauce and serve warm.`,
+  ];
+}
+
+/** Builds the makeRecipe() input for one filler recipe from its picks/stats/tags. */
+function fillerRecipeInput(
+  components: CuisineComponents, pick: FillerPick, stats: FillerStats, tags: string[], idPrefix: string, i: number,
+): Input {
+  const { cuisine, pantryItem } = components;
+  return {
+    id: `${idPrefix}-gen-${i + 1}`,
+    title: `${capitalize(pick.sauce)} ${capitalize(pick.protein)} with ${capitalize(pick.carb)}`,
+    cuisine, time: stats.time, tags, likes: stats.likes, kcal: stats.kcal,
+    ingredients: fillerIngredients(pick, pantryItem),
+    steps: fillerSteps(pick),
+  };
+}
+
+/** Generates `count` synthetic filler recipes for a cuisine using its ingredient pools. */
 function generateFillerRecipes(components: CuisineComponents, count: number, idPrefix: string): Recipe[] {
-  const { cuisine, proteins, vegetarianProteins, carbs, vegetables, sauces, pantryItem } = components;
-
   return Array.from({ length: count }, (_, i) => {
-    const protein = proteins[i % proteins.length];
-    const sauce = sauces[Math.floor(i / proteins.length) % sauces.length];
-    const carb = carbs[Math.floor(i / (proteins.length * sauces.length)) % carbs.length];
-    const vegetable = vegetables[i % vegetables.length];
-
-    const time = 15 + ((i * 7) % 40);
-    const likes = 20 + ((i * 13) % 70);
-    const kcal = 350 + ((i * 37) % 400);
-
-    const tags: string[] = [];
-    if (vegetarianProteins.has(protein)) tags.push('Vegetarian');
-    if (time <= 20) tags.push('Quick');
-
-    return makeRecipe({
-      id: `${idPrefix}-gen-${i + 1}`,
-      title: `${capitalize(sauce)} ${capitalize(protein)} with ${capitalize(carb)}`,
-      cuisine,
-      time,
-      tags,
-      likes,
-      kcal,
-      ingredients: [
-        [carb, 250, 'gram'],
-        [protein, 200, 'gram'],
-        [vegetable, 150, 'gram'],
-        [pantryItem, 2, 'tbsp'],
-      ],
-      steps: [
-        `Prepare the ${carb} according to the package instructions.`,
-        `Cook the ${protein} until done, then season well.`,
-        `Add the ${vegetable} and cook briefly until tender.`,
-        `Stir through the ${sauce} sauce and serve warm.`,
-      ],
-    });
+    const pick = pickFillerIngredients(components, i);
+    const stats = fillerStats(i);
+    const tags = fillerTags(pick, stats.time, components.vegetarianProteins);
+    return makeRecipe(fillerRecipeInput(components, pick, stats, tags, idPrefix, i));
   });
 }
 

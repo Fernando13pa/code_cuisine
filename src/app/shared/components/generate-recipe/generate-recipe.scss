@@ -117,7 +117,7 @@
 .ingredient-form__unit {
   height: 2.25rem;
   padding-inline: var(--space-3) var(--space-8);
-  background: var(--color-control) url('/assets/icon-chevron-down-sm.svg') no-repeat right var(--space-4) center;
+  background: var(--color-control) url('../../../../../public/assets/icon-chevron-down-sm.svg') no-repeat right var(--space-4) center;
   background-size: 0.625rem 0.3125rem;
   border: 0.0625rem solid transparent;
   border-radius: var(--radius-pill);
@@ -130,7 +130,7 @@
   }
 
   &.ingredient-form__unit--open {
-    background-image: url('/assets/icon-chevron-up-sm.svg');
+    background-image: url('../../../../../public/assets/icon-chevron-up-sm.svg');
   }
 }
 
@@ -259,7 +259,7 @@
 .ingredient-item__edit-unit {
   height: var(--control-height-sm);
   padding-inline: var(--space-2) var(--space-6);
-  background: var(--color-control) url('/assets/icon-chevron-down-sm.svg') no-repeat right var(--space-3) center;
+  background: var(--color-control) url('../../../../../public/assets/icon-chevron-down-sm.svg') no-repeat right var(--space-3) center;
   background-size: 0.5rem 0.25rem;
   border: 0.0625rem solid transparent;
   border-radius: var(--radius-pill);
@@ -267,7 +267,7 @@
   font-size: var(--font-size-xs);
 
   &.ingredient-item__edit-unit--open {
-    background-image: url('/assets/icon-chevron-up-sm.svg');
+    background-image: url('../../../../../public/assets/icon-chevron-up-sm.svg');
   }
 }
 

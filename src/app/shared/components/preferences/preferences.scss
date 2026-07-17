@@ -245,6 +245,11 @@
       .pref-chip__label {
         background: var(--color-brand);
       }
+
+      .pref-chip__hint {
+        color: var(--color-text);
+        opacity: 0.6;
+      }
     }
   }
 

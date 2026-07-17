@@ -12,10 +12,12 @@ import { RecipeService } from '../../services/recipe';
 export class Results {
   protected readonly recipeService = inject(RecipeService);
 
+  /** The selected cuisine, falling back to the first generated recipe's cuisine. */
   protected readonly cuisineLabel = computed(
     () => this.recipeService.preferences().cuisine ?? this.recipeService.results()[0]?.cuisine,
   );
 
+  /** The selected cooking time, or one derived from the first recipe's actual duration. */
   protected readonly timeLabel = computed(() => {
     const selected = this.recipeService.preferences().cookingTime;
     if (selected) return selected;

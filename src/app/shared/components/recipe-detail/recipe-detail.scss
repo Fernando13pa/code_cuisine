@@ -175,12 +175,16 @@
 
 .ingredients-columns {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-8);
   width: min(100%, 49rem);
   margin-right: auto;
   margin-bottom: var(--space-8);
   margin-left: auto;
+}
+
+.ingredients-columns__group {
+  min-width: 0; // allow shrinking below an unbroken long ingredient name's width
 }
 
 .ingredients-columns__group:only-child {
@@ -210,9 +214,10 @@
 
 .ingredients-columns__group li {
   display: grid;
-  grid-template-columns: 0.5rem 5.25rem 1fr;
+  grid-template-columns: 0.5rem 5.25rem minmax(0, 1fr);
   column-gap: var(--space-3);
   align-items: baseline;
+  overflow-wrap: anywhere;
 }
 
 .ingredients-columns__group li::before {
@@ -418,13 +423,21 @@
   }
 
   .ingredients-columns {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
     padding-inline: var(--space-3);
   }
 
   .ingredients-columns__group:only-child ul {
     column-count: 1;
+  }
+
+  .ingredients-columns__group ul {
+    font-size: var(--font-size-sm);
+  }
+
+  .ingredients-columns__group li {
+    grid-template-columns: 0.5rem 4.5rem minmax(0, 1fr);
   }
 
   .recipe-summary__nutrition dl {

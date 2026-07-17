@@ -10,14 +10,14 @@
         <div class="results-hero__visual">
           <img
             class="results-hero__image results-hero__image--desktop"
-            src="/imgs/img-results-ai-robot.svg"
+            src="imgs/img-results-ai-robot.svg"
             width="574"
             height="222"
             alt="A robot chef presenting a freshly prepared dish"
           />
           <img
             class="results-hero__image results-hero__image--mobile"
-            src="/imgs/ChatGPT%20Image%209.%20Juli%202025%2C%2015_33_59%201%20%281%29.svg"
+            src="imgs/ChatGPT%20Image%209.%20Juli%202025%2C%2015_33_59%201%20%281%29.svg"
             width="340"
             height="131"
             alt="A robot chef presenting a freshly prepared dish"
@@ -45,14 +45,14 @@
         @for (recipe of recipeService.results(); track recipe.id; let index = $index) {
           <article class="recipe-card">
             <div class="recipe-card__label">
-              <img src="/assets/icon-cuisine.svg" width="20" height="20" alt="" />
+              <img src="assets/icon-cuisine.svg" width="20" height="20" alt="" />
               <span>Recipe {{ index + 1 }}</span>
             </div>
 
             <h2>{{ recipe.title }}</h2>
 
             <p class="recipe-card__time">
-              <img src="/assets/icon-clock.svg" width="22" height="22" alt="" />
+              <img src="assets/icon-clock.svg" width="22" height="22" alt="" />
               <span>Cooking time: {{ recipe.cookingTime }}min</span>
             </p>
 
@@ -63,7 +63,7 @@
 
       <a class="results__generate" routerLink="/generate">
         <span>Generate new recipe</span>
-        <img src="/assets/icon-arrow-right-white.svg" width="28" height="16" alt="" />
+        <img src="assets/icon-arrow-right-white.svg" width="28" height="16" alt="" />
       </a>
     } @else {
       <div class="results__empty">

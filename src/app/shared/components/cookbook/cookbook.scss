@@ -175,11 +175,24 @@
   animation-delay: 520ms;
 }
 
+.cuisine-card picture {
+  display: block;
+  overflow: hidden;
+}
+
 .cuisine-card__image {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
+  transition: transform 600ms var(--easing-layout);
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cuisine-card:hover .cuisine-card__image {
+    transform: scale(1.05);
+  }
 }
 
 .cookbook__generate {

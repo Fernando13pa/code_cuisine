@@ -34,34 +34,42 @@ export class Preferences {
   readonly cuisine = signal<CuisineType | null>(null);
   readonly diet = signal<DietType | null>(null);
 
+  /** Increases the portion count, capped at 12. */
   incrementPortions(): void {
     if (this.portions() < 12) this.portions.update(v => v + 1);
   }
 
+  /** Decreases the portion count, floored at 1. */
   decrementPortions(): void {
     if (this.portions() > 1) this.portions.update(v => v - 1);
   }
 
+  /** Increases the number of cooks, capped at 3. */
   incrementCooks(): void {
     if (this.cooks() < 3) this.cooks.update(v => v + 1);
   }
 
+  /** Decreases the number of cooks, floored at 1. */
   decrementCooks(): void {
     if (this.cooks() > 1) this.cooks.update(v => v - 1);
   }
 
+  /** Selects a cooking time, or clears it if it's already selected. */
   selectCookingTime(value: CookingTime): void {
     this.cookingTime.set(this.cookingTime() === value ? null : value);
   }
 
+  /** Selects a cuisine, or clears it if it's already selected. */
   selectCuisine(value: CuisineType): void {
     this.cuisine.set(this.cuisine() === value ? null : value);
   }
 
+  /** Selects a diet, or clears it if it's already selected. */
   selectDiet(value: DietType): void {
     this.diet.set(this.diet() === value ? null : value);
   }
 
+  /** Saves the chosen preferences and navigates to the Loading step. */
   generate(): void {
     this.recipeService.setPreferences({
       portions: this.portions(),

@@ -57,10 +57,12 @@ export class App {
     return this.router.url === '/loading';
   }
 
+  /** Recipe Detail uses its own header spacing regardless of which recipe is shown. */
   protected get isRecipeDetailPage(): boolean {
     return this.router.url.startsWith('/recipe/');
   }
 
+  /** Matches any /cookbook/:cuisine page, but not the /cookbook index itself. */
   protected get isCuisineRecipesPage(): boolean {
     return /^\/cookbook\/[^/]+/.test(this.router.url);
   }
