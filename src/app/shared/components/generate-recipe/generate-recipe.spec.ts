@@ -36,7 +36,7 @@ describe('GenerateRecipe', () => {
       expect.objectContaining({ name: 'Pasta', amount: 250, unit: 'gram' }),
     ]);
     expect(component.name).toBe('');
-    expect(component.amount).toBe(100);
+    expect(component.amount).toBeNull();
     expect(component.canContinue()).toBe(true);
   });
 

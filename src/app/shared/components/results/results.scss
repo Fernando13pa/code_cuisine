@@ -33,7 +33,8 @@
   align-self: end;
   color: var(--color-text-inverse);
   font-family: var(--font-family-accent);
-  font-size: clamp(var(--font-size-3xl), 4vw, 3.375rem);
+  // Fluid instead of a fixed breakpoint jump: scales continuously from 320px to 1350px+.
+  font-size: clamp(1.75rem, 1.245rem + 2.524vw, 3.375rem);
   font-weight: var(--font-weight-semibold);
   line-height: 4.0625rem;
 }
@@ -46,7 +47,6 @@
   display: block;
   grid-area: visual;
   width: 100%;
-  max-width: 35.875rem;
   aspect-ratio: 574 / 222;
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -71,7 +71,7 @@
     max-width: 43rem;
     color: var(--color-text-inverse);
     font-family: var(--font-family-accent);
-    font-size: var(--font-size-xl);
+    font-size: clamp(1rem, 0.643rem + 1.786vw, 1.5rem);
     font-weight: var(--font-weight-medium);
     line-height: 1;
   }
@@ -80,16 +80,16 @@
 .results-hero__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-5);
-  margin-top: var(--space-8);
+  gap: clamp(1rem, 0.821rem + 0.893vw, 1.25rem);
+  margin-top: clamp(1rem, 0.286rem + 3.571vw, 2rem);
 
   span {
-    padding: var(--space-1) var(--space-4);
+    padding: var(--space-1) clamp(0.75rem, 0.571rem + 0.893vw, 1rem);
     color: var(--color-green-800);
     background: var(--color-cream-100);
     border-radius: var(--radius-pill);
     font-family: var(--font-family-accent);
-    font-size: 1.125rem;
+    font-size: clamp(1rem, 0.911rem + 0.446vw, 1.125rem);
     font-weight: var(--font-weight-medium);
     line-height: 1;
     text-align: center;
@@ -99,7 +99,7 @@
 .results__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-5);
+  gap: clamp(1rem, 0.821rem + 0.893vw, 1.25rem);
   margin-top: var(--space-12);
 }
 
@@ -126,7 +126,7 @@
     margin-top: var(--space-4);
     color: var(--color-green-900);
     font-family: var(--font-family-accent);
-    font-size: var(--font-size-2xl);
+    font-size: clamp(1.5rem, 1.143rem + 1.786vw, 2rem);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
   }
@@ -143,16 +143,16 @@
 .recipe-card__label {
   color: var(--color-green-800);
   font-family: var(--font-family-accent);
-  font-size: var(--font-size-xl);
+  font-size: clamp(1.25rem, 1.071rem + 0.893vw, 1.5rem);
   font-weight: var(--font-weight-semibold);
   line-height: 1;
 }
 
 .recipe-card__time {
-  margin-top: var(--space-5);
+  margin-top: clamp(1rem, 0.821rem + 0.893vw, 1.25rem);
   color: var(--color-green-700);
   font-family: var(--font-family-accent);
-  font-size: var(--font-size-lg);
+  font-size: clamp(1rem, 0.821rem + 0.893vw, 1.25rem);
   font-weight: var(--font-weight-medium);
 }
 
@@ -161,12 +161,12 @@
   min-height: 3.25rem;
   align-items: center;
   justify-content: center;
-  padding-inline: var(--space-8);
+  padding-inline: clamp(1rem, 0.286rem + 3.571vw, 2rem);
   margin-top: auto;
   color: var(--color-green-500);
   background: var(--color-cream-050);
   font-family: var(--font-family-accent);
-  font-size: var(--font-size-xl);
+  font-size: clamp(1rem, 0.643rem + 1.786vw, 1.5rem);
   font-weight: var(--font-weight-semibold);
   line-height: 1.25rem;
   text-align: center;
@@ -179,7 +179,10 @@
 
 .results__generate {
   position: absolute;
-  right: var(--page-padding);
+  // .results (the containing block) is full-bleed, but the content itself is
+  // capped at --content-max-width and centered, so the same offset needs to
+  // account for that centering gap to land on the real content edge.
+  right: calc(max(0px, (100% - var(--content-max-width)) / 2) + var(--page-padding));
   bottom: 11rem;
   display: flex;
   width: fit-content;
@@ -187,7 +190,7 @@
   gap: var(--space-3);
   margin-top: 0;
   color: var(--color-text-inverse);
-  font-size: var(--font-size-md);
+  font-size: clamp(1rem, 0.911rem + 0.446vw, 1.125rem);
   text-decoration: none;
 }
 
@@ -218,16 +221,17 @@
 }
 
 @media (max-width: 63.999rem) {
+  .results__inner {
+    max-width: 45rem;
+    margin-inline: auto;
+  }
+
   .results-hero {
     grid-template-columns: 1fr;
     grid-template-areas:
       'title'
       'visual'
       'intro';
-  }
-
-  .results-hero__visual {
-    max-width: 46rem;
   }
 
   .results__grid {
@@ -246,29 +250,12 @@
 }
 
 @media (max-width: 47.999rem) {
-  .results {
-    padding-block: 5.75rem var(--space-10);
-  }
-
-  .results-hero {
-    gap: var(--space-5);
-  }
-
-  .results-hero h1 {
-    font-size: var(--font-size-2xl);
-  }
-
   .results-hero__title-desktop {
     display: none;
   }
 
   .results-hero__title-mobile {
     display: inline;
-  }
-
-  .results-hero__visual {
-    margin-top: var(--space-1);
-    border-radius: var(--radius-xl);
   }
 
   .results-hero__image--desktop {
@@ -283,60 +270,18 @@
 
 @media (max-width: 37.5rem) {
   .results-hero__visual {
-    max-width: 21.25rem;
     aspect-ratio: 340 / 131;
   }
 }
 
 @media (max-width: 47.999rem) {
+  // line-height is unitless (relative to the element's own font-size), so it
+  // can't be expressed as a fluid clamp() alongside length-based values.
   .results-hero__intro p {
-    font-size: var(--font-size-sm);
     line-height: 1.35;
-  }
-
-  .results-hero__chips {
-    gap: var(--space-4);
-    margin-top: var(--space-4);
-
-    span {
-      padding-inline: var(--space-3);
-      font-size: var(--font-size-sm);
-    }
-  }
-
-  .results__grid {
-    gap: var(--space-4);
-    margin-top: var(--space-12);
   }
 
   .recipe-card {
     min-height: 18.375rem;
-    padding: var(--space-6);
-
-    h2 {
-      margin-top: var(--space-4);
-      font-size: var(--font-size-xl);
-    }
-  }
-
-  .recipe-card__label {
-    font-size: var(--font-size-lg);
-  }
-
-  .recipe-card__time {
-    margin-top: var(--space-4);
-    font-size: var(--font-size-sm);
-  }
-
-  .recipe-card__view {
-    min-height: 3.25rem;
-    padding-inline: var(--space-4);
-    font-size: var(--font-size-sm);
-  }
-
-  .results__generate {
-    margin-top: var(--space-12);
-    margin-inline: auto;
-    font-size: var(--font-size-sm);
   }
 }

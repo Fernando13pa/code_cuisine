@@ -46,6 +46,12 @@ main.app-main--preferences {
   }
 }
 
+@media (max-width: 63.999rem) {
+  :host(.app-root--results) app-header {
+    --content-max-width: 45rem;
+  }
+}
+
 @media (min-width: 48rem) {
   :host(.app-root--preferences) app-header {
     --page-padding: clamp(var(--space-16), 14vw, 18rem);

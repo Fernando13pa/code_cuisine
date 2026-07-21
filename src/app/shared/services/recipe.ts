@@ -25,6 +25,31 @@ const MIN_RECIPE_INGREDIENTS = 2;
 const MIN_AMOUNT_UNITS_PER_PORTION = 80;
 const PIECE_TO_AMOUNT_UNITS = 80;
 
+// Likes and user-generated cookbook recipes live in localStorage, not Firebase,
+// so they survive a reload without needing a backend round-trip.
+const LIKES_STORAGE_KEY = 'code-cuisine:likes';
+const FAVORITES_STORAGE_KEY = 'code-cuisine:favorites';
+const SAVED_RECIPES_STORAGE_KEY = 'code-cuisine:saved-recipes';
+
+/** Reads and parses a JSON value from localStorage, falling back on any failure. */
+function readJson<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Writes a value to localStorage as JSON; silently no-ops if storage is unavailable. */
+function writeJson(key: string, value: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Storage full/disabled: likes or saved recipes just won't persist this time.
+  }
+}
+
 /** Converts an ingredient's amount to a common unit so different units can be compared. */
 function toComparableAmountUnits(ingredient: Ingredient): number {
   const unit = ingredient.unit.toLowerCase();
@@ -133,7 +158,7 @@ export class RecipeService {
     diet: null,
   });
   readonly results = signal<Recipe[]>([]);
-  readonly cookbookRecipes = signal<Recipe[]>(COOKBOOK_RECIPES);
+  readonly cookbookRecipes = signal<Recipe[]>(this.buildInitialCookbookRecipes());
   readonly isLoading = signal(false);
   readonly error = signal<ApiErrorResponse | null>(null);
 
@@ -168,6 +193,56 @@ export class RecipeService {
       list.map(recipe => recipe.id === id ? { ...recipe, likes: recipe.likes + delta } : recipe);
     this.results.update(update);
     this.cookbookRecipes.update(update);
+    this.persistLikeChange(id);
+  }
+
+  /** True when this browser has already favorited this recipe. */
+  isFavorited(id: string): boolean {
+    return readJson<string[]>(FAVORITES_STORAGE_KEY, []).includes(id);
+  }
+
+  /** Toggles a recipe's favorite state, keeping its like count and the saved choice in sync. */
+  toggleFavorite(id: string): void {
+    const favorites = readJson<string[]>(FAVORITES_STORAGE_KEY, []);
+    const wasFavorited = favorites.includes(id);
+    const nextFavorites = wasFavorited ? favorites.filter(f => f !== id) : [...favorites, id];
+    writeJson(FAVORITES_STORAGE_KEY, nextFavorites);
+    this.updateLikes(id, wasFavorited ? -1 : 1);
+  }
+
+  /** Builds the cookbook list: static recipes plus any the user has generated and saved, with likes restored. */
+  private buildInitialCookbookRecipes(): Recipe[] {
+    const merged = [...this.loadSavedRecipes(), ...COOKBOOK_RECIPES];
+    return this.applyLikeOverrides(merged, readJson(LIKES_STORAGE_KEY, {}));
+  }
+
+  /** Overlays persisted like counts onto a recipe list. */
+  private applyLikeOverrides(recipes: Recipe[], overrides: Record<string, number>): Recipe[] {
+    return recipes.map(r => (r.id in overrides ? { ...r, likes: overrides[r.id] } : r));
+  }
+
+  /** Saves a recipe's current like count to localStorage so it survives a reload. */
+  private persistLikeChange(id: string): void {
+    const recipe = this.cookbookRecipes().find(r => r.id === id) ?? this.results().find(r => r.id === id);
+    if (!recipe) return;
+    const overrides = readJson<Record<string, number>>(LIKES_STORAGE_KEY, {});
+    writeJson(LIKES_STORAGE_KEY, { ...overrides, [id]: recipe.likes });
+  }
+
+  /** Reads previously saved user-generated recipes from localStorage. */
+  private loadSavedRecipes(): Recipe[] {
+    return readJson<Recipe[]>(SAVED_RECIPES_STORAGE_KEY, []);
+  }
+
+  /** Files newly generated recipes under the chosen cuisine, saved first, ahead of the existing ones. */
+  private saveGeneratedRecipesToCookbook(recipes: Recipe[]): void {
+    const cuisine = this.preferences().cuisine;
+    if (!cuisine) return;
+
+    const tagged = recipes.map(r => ({ ...r, cuisine }));
+    const ids = new Set(tagged.map(r => r.id));
+    writeJson(SAVED_RECIPES_STORAGE_KEY, [...tagged, ...this.loadSavedRecipes().filter(r => !ids.has(r.id))]);
+    this.cookbookRecipes.update(list => [...tagged, ...list.filter(r => !ids.has(r.id))]);
   }
 
   /** Ingredients with a usable name and a positive numeric amount. */
@@ -196,7 +271,9 @@ export class RecipeService {
 
     try {
       const recipes = await this.generateWithN8n();
-      this.results.set(recipes.map(normalizeRecipe));
+      const normalized = recipes.map(normalizeRecipe);
+      this.results.set(normalized);
+      this.saveGeneratedRecipesToCookbook(normalized);
     } catch (err) {
       this.error.set(toApiError(err));
     } finally {
@@ -211,7 +288,15 @@ export class RecipeService {
         .post<RecipeGenerationResponse>(environment.n8nWebhookUrl, this.buildRequest())
         .pipe(timeout(REQUEST_TIMEOUT_MS)),
     );
-    return response.output.recipes;
+    return this.extractRecipes(response);
+  }
+
+  /** n8n's current workflow double-wraps the payload (`output.output.recipes`); unwrap either shape. */
+  private extractRecipes(response: RecipeGenerationResponse): RawRecipe[] {
+    const output = response.output as { recipes?: RawRecipe[]; output?: { recipes: RawRecipe[] } };
+    const recipes = output.recipes ?? output.output?.recipes;
+    if (!recipes) throw new Error('n8n response did not include any recipes.');
+    return recipes;
   }
 
   /** Construye el request body según el contrato Angular ↔ n8n. */

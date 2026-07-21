@@ -37,6 +37,11 @@ export class App {
     return this.isCuisineRecipesPage;
   }
 
+  @HostBinding('class.app-root--results')
+  protected get isResultsRoot(): boolean {
+    return this.router.url === '/results';
+  }
+
   /** Indicates whether the full-screen landing page is currently active. */
   protected get isHomePage(): boolean {
     return this.router.url === '/';

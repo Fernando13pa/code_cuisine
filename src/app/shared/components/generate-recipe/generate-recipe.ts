@@ -25,7 +25,7 @@ export class GenerateRecipe {
   };
 
   name = '';
-  amount = 100;
+  amount: number | null = null;
   unit: Unit = 'gram';
   unitDropdownOpen = false;
   editUnitDropdownOpen = false;
@@ -57,8 +57,9 @@ export class GenerateRecipe {
   /** Adds the current form entry to the ingredient list and resets the form. */
   addIngredient(): void {
     if (!this.isIngredientValid) return;
+    const amount = Number(this.amount);
     this.ingredients.update(list => [
-      { id: crypto.randomUUID(), name: this.name.trim(), amount: this.amount, unit: this.unit },
+      { id: crypto.randomUUID(), name: this.name.trim(), amount, unit: this.unit },
       ...list,
     ]);
     this.resetIngredientForm();
@@ -67,7 +68,7 @@ export class GenerateRecipe {
   /** Clears the new-ingredient form back to its default values. */
   private resetIngredientForm(): void {
     this.name = '';
-    this.amount = 100;
+    this.amount = null;
     this.unit = 'gram';
   }
 
@@ -110,7 +111,7 @@ export class GenerateRecipe {
   }
 
   /** True for finite, positive amounts. */
-  private isValidAmount(value: number): boolean {
-    return Number.isFinite(value) && value > 0;
+  private isValidAmount(value: number | null): boolean {
+    return value !== null && Number.isFinite(value) && value > 0;
   }
 }

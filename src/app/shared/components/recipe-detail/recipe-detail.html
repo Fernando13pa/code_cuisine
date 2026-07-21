@@ -84,23 +84,23 @@
           <div class="ingredients-columns__group">
             <h3>Your ingredients</h3>
             <ul>
-              @for (ingredient of r.ingredients; track ingredient.id) {
+              @for (ingredient of yourIngredients(); track ingredient.id) {
                 <li>
                   <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
-                  {{ ingredient.name }}
+                  {{ formatIngredientName(ingredient) }}
                 </li>
               }
             </ul>
           </div>
 
-          @if (r.extraIngredients.length > 0) {
+          @if (extraIngredients().length > 0) {
             <div class="ingredients-columns__group">
               <h3>Extra ingredients</h3>
               <ul>
-                @for (ingredient of r.extraIngredients; track ingredient.id) {
+                @for (ingredient of extraIngredients(); track ingredient.id) {
                   <li>
                     <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
-                    {{ ingredient.name }}
+                    {{ formatIngredientName(ingredient) }}
                   </li>
                 }
               </ul>
@@ -108,7 +108,7 @@
           }
         </div>
 
-        @if (r.missingIngredientsNote) {
+        @if (r.missingIngredientsNote && (!usesEnteredIngredients() || r.extraIngredients.length > 0)) {
           <p class="recipe-detail__missing-note">{{ r.missingIngredientsNote }}</p>
         }
       </div>

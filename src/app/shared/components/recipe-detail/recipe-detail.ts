@@ -17,6 +17,25 @@ const CHEF_ICONS: Partial<Record<ChefNumber, string>> = {
   2: 'assets/icon-chef-2.svg',
 };
 
+/** Normalizes ingredient names enough to compare user input with recipe output. */
+function normalizeIngredientName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\([^)]*\)/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/** True when two ingredient names are close enough to count as the same item. */
+function ingredientNamesMatch(a: string, b: string): boolean {
+  const first = normalizeIngredientName(a);
+  const second = normalizeIngredientName(b);
+  if (!first || !second) return false;
+  return first === second || first.includes(second) || second.includes(first);
+}
+
 @Component({
   selector: 'app-recipe-detail',
   imports: [RouterLink],
@@ -34,6 +53,46 @@ export class RecipeDetail {
   readonly recipe = computed(
     () => this.recipeService.getRecipeById(this.recipeId),
   );
+
+  /** Ingredients the user actually entered on the Generate page. */
+  private readonly enteredIngredients = computed(() =>
+    this.recipeService.ingredients().filter(
+      ingredient =>
+        ingredient.name.trim().length > 0
+        && Number.isFinite(ingredient.amount)
+        && ingredient.amount > 0,
+    ),
+  );
+
+  /** True when this detail page can use the user's Generate-page ingredient list. */
+  readonly usesEnteredIngredients = computed(() => this.enteredIngredients().length > 0);
+
+  /** Ingredients shown under "Your ingredients". */
+  readonly yourIngredients = computed(() => {
+    const recipe = this.recipe();
+    if (!recipe) return [];
+
+    const entered = this.enteredIngredients();
+    return this.usesEnteredIngredients() ? entered : recipe.ingredients;
+  });
+
+  /** Ingredients shown under "Extra ingredients". */
+  readonly extraIngredients = computed(() => {
+    const recipe = this.recipe();
+    if (!recipe) return [];
+
+    const entered = this.enteredIngredients();
+    if (!this.usesEnteredIngredients()) return recipe.extraIngredients;
+
+    const recipeExtras = recipe.ingredients.filter(
+      recipeIngredient =>
+        !entered.some(enteredIngredient =>
+          ingredientNamesMatch(recipeIngredient.name, enteredIngredient.name),
+        ),
+    );
+
+    return [...recipeExtras, ...recipe.extraIngredients];
+  });
 
   /** Route to go back to. */
   readonly backLink = computed(() => ['/results']);
@@ -77,8 +136,12 @@ export class RecipeDetail {
   /** True when more than one chef is involved in this recipe's steps. */
   readonly hasMultipleChefs = computed(() => this.participatingChefs().length > 1);
 
-  /** Local favorite state. TODO: persist here once Firebase is connected. */
-  readonly isFavorited = signal(false);
+  /** Whether this browser already favorited the current recipe, restored from localStorage. */
+  readonly isFavorited = computed(() => {
+    const recipe = this.recipe();
+    return recipe ? this.recipeService.isFavorited(recipe.id) : false;
+  });
+
   readonly ingredientsOpen = signal(false);
   readonly directionsOpen = signal(false);
 
@@ -97,27 +160,47 @@ export class RecipeDetail {
   /** Formats an ingredient's amount with a compact unit, e.g. "200g". */
   formatIngredientAmount(ingredient: Ingredient): string {
     const compactUnits: Record<string, string> = {
+      g: 'g',
       gram: 'g',
       grams: 'g',
+      gramm: 'g',
       kilogram: 'kg',
       kilograms: 'kg',
+      kg: 'kg',
       ml: 'ml',
       l: 'l',
+      piece: '',
+      pieces: '',
+      stück: '',
+      stueck: '',
+      cloves: '',
     };
-    const compactUnit = compactUnits[ingredient.unit.toLowerCase()];
-    return compactUnit
+    const unit = ingredient.unit.toLowerCase();
+    const compactUnit = compactUnits[unit];
+
+    if (Object.hasOwn(compactUnits, unit)) {
+      return compactUnit
       ? `${ingredient.amount}${compactUnit}`
-      : `${ingredient.amount} ${ingredient.unit}`;
+      : `${ingredient.amount}`;
+    }
+
+    return `${ingredient.amount} ${ingredient.unit}`;
   }
 
-  /** Toggles the favorite state and updates the recipe's like count accordingly. */
+  /** Keeps the ingredient label clean for display, e.g. removes examples like "(z.B. Penne)". */
+  formatIngredientName(ingredient: Ingredient): string {
+    return ingredient.name
+      .replace(/\((?:z\.?\s*b\.?|e\.?\s*g\.?|for example)[^)]*\)/gi, '')
+      .replace(/\s+\d+\s*$/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
+  /** Toggles the favorite state; the service keeps the like count and saved choice in sync. */
   toggleFavorite(): void {
     const recipe = this.recipe();
     if (!recipe) return;
-
-    const delta = this.isFavorited() ? -1 : 1;
-    this.isFavorited.update(favorited => !favorited);
-    this.recipeService.updateLikes(recipe.id, delta);
+    this.recipeService.toggleFavorite(recipe.id);
   }
 
   /** Expands or collapses the ingredients section. */

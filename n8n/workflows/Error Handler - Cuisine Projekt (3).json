@@ -1,9 +1,8 @@
 {
-  "name": "Cuisine Projekt",
+  "name": "Error Handler - Cuisine Projekt",
   "nodes": [
     {
       "parameters": {
-        "modelName": "models/gemini-2.5-flash",
         "options": {
           "maxOutputTokens": 32000
         }
@@ -11,14 +10,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -800,
-        624
+        -864,
+        592
       ],
-      "id": "5e5bb01a-adaa-4207-9086-3ff233c082af",
+      "id": "bfbd178b-f90c-4687-af1b-6325baba1300",
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "iqLFrWJmjomA30NH",
+          "id": "7u3sFscKO8JclHue",
           "name": "Google Gemini(PaLM) Api account"
         }
       },
@@ -34,10 +33,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1904,
-        352
+        -1968,
+        320
       ],
-      "id": "2dad6073-d35c-4b35-8d0b-24328dc0a663",
+      "id": "3c7fbc3f-3e99-4803-adfb-58a7a6ee50f3",
       "name": "Zutaten-Eingang (Angular)",
       "webhookId": "259b312e-1093-41f9-b2eb-41f232c4f9d4",
       "notes": "Empfängt POST-Requests vom Angular-Frontend mit den User-Eingaben:\ningredients (string), portions (1-12), timeCategory (quick/medium/elaborate),\ndiet (vegetarian/vegan/keto/none), numberOfChefs (1-3).\nEndpoint: /webhook/generate_recipe"
@@ -46,15 +45,16 @@
       "parameters": {
         "promptType": "define",
         "text": "=Du bist ein kreativer Koch-Assistent für ein Kochspiel mit {{ $json.body.numberOfChefs }} Kochhelfer(n).\n\nVerfügbare Zutaten: {{ $json.body.ingredients }}\nGewünschte Portionen: {{ $json.body.portions }}\nZeitrahmen: {{ $json.body.timeCategory }} (quick = bis 20 Min, medium = 20-45 Min, elaborate = 45+ Min)\nErnährungsweise: {{ $json.body.diet }} (vegetarian, vegan, keto, oder none)\n\nGeneriere genau 3 unterschiedliche Rezeptvorschläge, die sich in Zubereitungsart oder Geschmacksrichtung unterscheiden. Jedes Rezept soll:\n- Mindestens 70% der angegebenen Zutaten nutzen\n- Höchstens 3 zusätzliche Basis-Zutaten benötigen (in extraIngredients), diese klar in missingIngredientsNote benennen\n- Zum gewählten Zeitrahmen passen\n- Die Ernährungsweise strikt einhalten (z.B. bei \"vegan\" keine tierischen Produkte)\n- Alle Mengenangaben auf die gewünschte Portionszahl skalieren\n- Nährwerte sowohl pro Portion (Feldnamen mit \"PerPortion\") als auch für das Gesamtrezept (Feldnamen mit \"Total\") angeben\n- Zubereitungsschritte chronologisch und logisch aufbauen, aber NUR so viele Schritte wie für das Rezept tatsächlich nötig sind (keine künstliche Aufblähung durch unnötige Kleinstschritte, aber auch keine überladenen Sammel-Schritte mit mehreren Handlungen)\n- Jeder Schritt beschreibt GENAU EINE klar abgegrenzte Handlung und erhält einen kurzen, prägnanten Titel (2-5 Wörter, z.B. \"Nudeln kochen\", \"Sauce zubereiten\") im Feld \"title\"\n- Schritte auf die {{ $json.body.numberOfChefs }} Kochhelfer verteilen (chef: \"1\" bis \"{{ $json.body.numberOfChefs }}\")\n- Parallele Arbeitsschritte (die gleichzeitig von verschiedenen Köchen ausgeführt werden können) mit isParallel: true kennzeichnen\n- Wartezeiten (z.B. Backofen) für andere Vorbereitungsschritte nutzen\n- Auch für Kochanfänger verständlich sein\n\nAntworte AUSSCHLIESSLICH mit validem JSON in genau dieser Struktur, ohne Markdown-Codeblöcke (keine ```), ohne Erklärungen davor oder danach. Die Antwort muss direkt mit { beginnen und mit } enden. Das \"recipes\"-Array muss genau 3 Objekte enthalten:\n\n{\n  \"recipes\": [\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"cookingTime\": 30,\n      \"cuisine\": \"German\",\n      \"tags\": [\"string\"],\n      \"missingIngredientsNote\": \"string\",\n      \"nutritionalInfo\": {\n        \"energyPerPortion\": 0, \"proteinPerPortion\": 0, \"fatPerPortion\": 0, \"carbsPerPortion\": 0,\n        \"energyTotal\": 0, \"proteinTotal\": 0, \"fatTotal\": 0, \"carbsTotal\": 0\n      },\n      \"ingredients\": [{ \"name\": \"string\", \"amount\": 0, \"unit\": \"gram\" }],\n      \"extraIngredients\": [{ \"name\": \"string\", \"amount\": 0, \"unit\": \"gram\" }],\n      \"steps\": [{ \"number\": 1, \"title\": \"string\", \"description\": \"string\", \"chef\": \"1\", \"isParallel\": false }]\n    }\n  ]\n}\n",
+        "hasOutputParser": true,
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -752,
-        368
+        -816,
+        336
       ],
-      "id": "99ea3a16-6040-407b-b4c3-2142fe94aed9",
+      "id": "54e180d8-39e1-4f59-a246-99fe636b6782",
       "name": "Rezept-Generator ",
       "retryOnFail": true,
       "waitBetweenTries": 2000,
@@ -67,25 +67,25 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -432,
-        240
+        -1984,
+        -32
       ],
-      "id": "27b500ed-992b-495a-89b6-9e057abf33c8",
+      "id": "63d27b31-a024-4e27-b1b5-2e66406cdf7f",
       "name": "JSON-Antwort parsen",
       "notes": "Extrahiert und parsed das rohe JSON aus der Gemini-Textantwort.\nEntfernt eventuelle Markdown-Codeblock-Marker (```json), falls das\nModell sie trotz Anweisung mit einbaut. Wirft einen Fehler, falls\ndie Antwort kein valides JSON enthält (z.B. bei Gemini-Ausfall)."
     },
     {
       "parameters": {
-        "fieldToSplitOut": "recipes",
+        "fieldToSplitOut": "output.recipes",
         "options": {}
       },
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -160,
-        192
+        -224,
+        160
       ],
-      "id": "1790c8d9-6f2c-4b88-9bab-046ba4dcf950",
+      "id": "df955ea6-822a-49ee-8c7c-1f23b0e9d79d",
       "name": "Rezepte einzeln aufteilen",
       "notes": "Teilt das recipes-Array (3 Rezepte) in 3 einzelne Items auf.\nNotwendig, damit jedes Rezept als eigenständiger Eintrag in\nFirebase gespeichert wird (statt als verschachteltes Array).\nFeld: recipes."
     },
@@ -101,10 +101,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        64,
-        32
+        0,
+        0
       ],
-      "id": "4c69f012-eff1-420e-bffb-88fae915cf27",
+      "id": "156cbf3f-ff14-416c-a12c-594a60486502",
       "name": "Rezepte in Firebase speichern ",
       "notes": "Speichert jedes der 3 Rezepte einzeln per POST in der Firebase\nRealtime Database. Läuft 3x (einmal pro Rezept-Item).\nEndpoint: https://cuisine-recipe-8ef7b-default-rtdb.europe-west1.firebasedatabase.app/recipes.json"
     },
@@ -117,10 +117,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -80,
-        400
+        -240,
+        384
       ],
-      "id": "60cef5a0-a52c-40a6-b89c-87068b684c2a",
+      "id": "91af0f09-82e9-4f2e-b595-fde80f2ff7c3",
       "name": "Antwort an Angular senden ",
       "notes": "Sendet alle 3 generierten Rezepte gebündelt als JSON-Antwort\nzurück an das Angular-Frontend. Läuft unabhängig vom\nFirebase-Speicher-Pfad (direkte Verzweigung vom AI Agent)."
     },
@@ -132,10 +132,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -1696,
-        352
+        -1760,
+        320
       ],
-      "id": "e990014a-f2dd-43f4-bfa7-bad9f37e66c9",
+      "id": "6899a1be-0629-4b94-9103-cbaa4d6fc0f9",
       "name": "Quota-Stand abfragen"
     },
     {
@@ -166,10 +166,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1280,
-        352
+        -1344,
+        320
       ],
-      "id": "33e953fb-8efb-4c09-87e7-db71aafb4d3a",
+      "id": "db382dde-14bd-4c9d-b941-1df203e9cabc",
       "name": "Limit erreicht"
     },
     {
@@ -183,10 +183,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1056,
-        128
+        -1120,
+        96
       ],
-      "id": "09f71b88-d7a3-437a-a0ab-c05ab52d0454",
+      "id": "f2d64831-3934-4ee8-9a95-f6f30574c64f",
       "name": "Fehler: Quote überschritten"
     },
     {
@@ -196,10 +196,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1504,
-        352
+        -1568,
+        320
       ],
-      "id": "4badb95f-1e80-4fbc-83ea-c7727fd7fa6d",
+      "id": "60a9bf11-4ca0-409a-9d81-99ad9f06ff81",
       "name": "IP + Quote auswerten"
     },
     {
@@ -214,11 +214,91 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -1008,
-        368
+        -1072,
+        336
       ],
-      "id": "1e1d5892-d856-4190-9fcc-95242f54f34a",
+      "id": "4cb01b1d-0913-42b3-ba2e-5e42ae0ce374",
       "name": "Zähler erhöhen"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1696,
+        976
+      ],
+      "id": "e981b0e6-e610-4428-af62-60ae2394ddbe",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "fromEmail": "fernando13ca@gmail.com",
+        "toEmail": "fernando13ca@gmail.com",
+        "subject": "=⚠️ Fehler im Workflow: {{ $json.workflow.name }}",
+        "html": "=<h3>Es ist ein Fehler aufgetreten</h3>\n<p><b>Workflow:</b> {{ $json.workflow.name }}</p>\n<p><b>Fehler:</b> {{ $json.execution.error.message }}</p>\n<p><b>Node:</b> {{ $json.execution.error.node.name }}</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -1488,
+        976
+      ],
+      "id": "afb55136-8860-43ce-8add-fff6743f5aed",
+      "name": "Send an Email",
+      "webhookId": "5648adad-d127-497c-8de6-6da5d48a656e",
+      "credentials": {
+        "smtp": {
+          "id": "GOorWsdojOjjF8kz",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserAutofixing",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        544
+      ],
+      "id": "694b6b3d-90bb-4236-9b56-8e1c08aadde1",
+      "name": "Auto-fixing Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        736
+      ],
+      "id": "8d718fbc-0afb-46df-a631-958a3f277558",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7u3sFscKO8JclHue",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"recipes\": [\n    {\n      \"id\": \"recipe-001\",\n      \"title\": \"Cremige Pilz-Pasta\",\n      \"cookingTime\": 25,\n      \"cuisine\": \"German\",\n      \"tags\": [\"vegetarian\", \"quick\", \"creamy\"],\n      \"missingIngredientsNote\": \"Zusätzlich benötigt: Sahne, Parmesan\",\n      \"nutritionalInfo\": {\n        \"energyPerPortion\": 520,\n        \"proteinPerPortion\": 18,\n        \"fatPerPortion\": 22,\n        \"carbsPerPortion\": 60,\n        \"energyTotal\": 2080,\n        \"proteinTotal\": 72,\n        \"fatTotal\": 88,\n        \"carbsTotal\": 240\n      },\n      \"ingredients\": [\n        { \"name\": \"Pasta\", \"amount\": 400, \"unit\": \"gram\" },\n        { \"name\": \"Pilze\", \"amount\": 300, \"unit\": \"gram\" }\n      ],\n      \"extraIngredients\": [\n        { \"name\": \"Sahne\", \"amount\": 200, \"unit\": \"ml\" },\n        { \"name\": \"Parmesan\", \"amount\": 50, \"unit\": \"gram\" }\n      ],\n      \"steps\": [\n        {\n          \"number\": 1,\n          \"title\": \"Wasser aufsetzen\",\n          \"description\": \"Einen großen Topf mit Salzwasser zum Kochen bringen.\",\n          \"chef\": \"1\",\n          \"isParallel\": true\n        },\n        {\n          \"number\": 2,\n          \"title\": \"Pilze schneiden\",\n          \"description\": \"Pilze putzen und in Scheiben schneiden.\",\n          \"chef\": \"2\",\n          \"isParallel\": true\n        }\n      ]\n    }\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -480,
+        720
+      ],
+      "id": "76d72cb2-474a-466a-9b72-6ec6a7defcd7",
+      "name": "Structured Output Parser"
     }
   ],
   "pinData": {},
@@ -249,17 +329,6 @@
       "main": [
         [
           {
-            "node": "JSON-Antwort parsen",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "JSON-Antwort parsen": {
-      "main": [
-        [
-          {
             "node": "Rezepte einzeln aufteilen",
             "type": "main",
             "index": 0
@@ -270,6 +339,11 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "JSON-Antwort parsen": {
+      "main": [
+        []
       ]
     },
     "Rezepte einzeln aufteilen": {
@@ -333,6 +407,50 @@
           }
         ]
       ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto-fixing Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Rezept-Generator ",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Auto-fixing Output Parser",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -341,12 +459,12 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "da09a192-bb1e-4138-bf42-d37cf924fd8c",
+  "versionId": "5e98d019-48a1-4d14-a902-4d9fc5d14950",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "a03d19fe940280a75307c6014281bfff927d3d6353fff9d02fccd323242a8bd4"
+    "instanceId": "670539d149468006da5479779d687d12506d12f2db4f214aa15c3fe4c19c0158"
   },
   "nodeGroups": [],
-  "id": "rj5DUk6im2Ix8mlL",
+  "id": "VwrPjZNRHIkzdT1s",
   "tags": []
 }
