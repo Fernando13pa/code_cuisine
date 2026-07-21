@@ -62,15 +62,11 @@ The Angular frontend sends the user's ingredients to an **n8n automation workflo
 
 ### Home
 
-![Home](../design/Desk/hero.jpg)
-
 The starting point. Jump straight into the generator or browse the cookbook for inspiration.
 
 ---
 
 ### Generate Recipe
-
-![Generate Recipe](../design/Desk/Step%201%20Generate%20recipe.jpg)
 
 Add your ingredients one by one with amounts and units. They stack up into your ingredient list as you go.
 
@@ -78,15 +74,11 @@ Add your ingredients one by one with amounts and units. They stack up into your 
 
 ### Preferences
 
-![Preferences](../design/Desk/Step%202%20Preferences%20.jpg)
-
 Set your cuisine style and dietary restrictions before hitting generate — so the results actually fit your needs.
 
 ---
 
 ### Recipe Results
-
-![Results](../design/Desk/Rresults.jpg)
 
 The AI returns 3 recipe options with title, cooking time and tags. Pick the one that sounds best and dive in.
 
@@ -94,15 +86,11 @@ The AI returns 3 recipe options with title, cooking time and tags. Pick the one 
 
 ### Full Recipe View
 
-![Recipe](../design/Desk/One%20recipe%20view%20-%20one%20cook.jpg)
-
 Every recipe includes a full ingredient list, step-by-step directions, nutritional breakdown and a heart button to save it. Directions are color-coded for Chef 1 and Chef 2 so two people can share the cooking.
 
 ---
 
 ### Cookbook
-
-![Cookbook](../design/Desk/Cookbook.jpg)
 
 A curated collection of all recipes, organized by cuisine category. The top of the page always surfaces the most-liked dishes from the community.
 
