@@ -45,23 +45,23 @@ export class Cookbook {
   ];
 
   readonly cuisines: CuisineCard[] = [
-    { slug: 'italian', name: 'Italian cuisine', emoji: '🍕', image: 'imgs/Italien.svg' },
-    { slug: 'german', name: 'German cuisine', emoji: '🥨', image: 'imgs/German.svg' },
-    { slug: 'japanese', name: 'Japanese cuisine', emoji: '🥢', image: 'imgs/Japanese.svg' },
-    { slug: 'gourmet', name: 'Gourmet cuisine', emoji: '✨', image: 'imgs/Gourmet.svg' },
-    { slug: 'indian', name: 'Indian cuisine', emoji: '🍛', image: 'imgs/Indian.svg' },
-    { slug: 'fusion', name: 'Fusion cuisine', emoji: '🍢', image: 'imgs/Fusion.svg' },
+    { slug: 'italian', name: 'Italian cuisine', emoji: '🍕', image: 'imgs/Italien.webp' },
+    { slug: 'german', name: 'German cuisine', emoji: '🥨', image: 'imgs/German.webp' },
+    { slug: 'japanese', name: 'Japanese cuisine', emoji: '🥢', image: 'imgs/Japanese.webp' },
+    { slug: 'gourmet', name: 'Gourmet cuisine', emoji: '✨', image: 'imgs/Gourmet.webp' },
+    { slug: 'indian', name: 'Indian cuisine', emoji: '🍛', image: 'imgs/Indian.webp' },
+    { slug: 'fusion', name: 'Fusion cuisine', emoji: '🍢', image: 'imgs/Fusion.webp' },
   ];
 
   /** Returns the mobile-optimized hero image for a cuisine, falling back to the desktop one. */
   mobileImage(cuisine: CuisineCard): string {
     const images: Record<string, string> = {
-      italian: 'imgs/italien-mobile.svg',
-      german: 'imgs/German-mobile.svg',
-      japanese: 'imgs/japanese-mobile.svg',
-      gourmet: 'imgs/gourmet-mobile.svg',
-      indian: 'imgs/indian-mobile.svg',
-      fusion: 'imgs/fusion-mobile.svg',
+      italian: 'imgs/italien-mobile.webp',
+      german: 'imgs/German-mobile.webp',
+      japanese: 'imgs/japanese-mobile.webp',
+      gourmet: 'imgs/gourmet-mobile.webp',
+      indian: 'imgs/indian-mobile.webp',
+      fusion: 'imgs/fusion-mobile.webp',
     };
     return images[cuisine.slug] ?? cuisine.image;
   }
