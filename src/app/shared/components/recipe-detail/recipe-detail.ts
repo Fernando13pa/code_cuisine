@@ -17,25 +17,6 @@ const CHEF_ICONS: Partial<Record<ChefNumber, string>> = {
   2: 'assets/icon-chef-2.svg',
 };
 
-/** Normalizes ingredient names enough to compare user input with recipe output. */
-function normalizeIngredientName(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\([^)]*\)/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-/** True when two ingredient names are close enough to count as the same item. */
-function ingredientNamesMatch(a: string, b: string): boolean {
-  const first = normalizeIngredientName(a);
-  const second = normalizeIngredientName(b);
-  if (!first || !second) return false;
-  return first === second || first.includes(second) || second.includes(first);
-}
-
 @Component({
   selector: 'app-recipe-detail',
   imports: [RouterLink],
@@ -48,6 +29,8 @@ export class RecipeDetail {
   private readonly recipeService = inject(RecipeService);
 
   private readonly recipeId = this.route.snapshot.paramMap.get('id');
+  private readonly cameFrom = this.route.snapshot.queryParamMap.get('from');
+  private readonly cameFromCuisine = this.route.snapshot.queryParamMap.get('cuisine');
 
   /** The recipe being viewed, looked up by the route's id param. */
   readonly recipe = computed(
@@ -76,29 +59,21 @@ export class RecipeDetail {
     return this.usesEnteredIngredients() ? entered : recipe.ingredients;
   });
 
-  /** Ingredients shown under "Extra ingredients". */
-  readonly extraIngredients = computed(() => {
-    const recipe = this.recipe();
-    if (!recipe) return [];
+  /** Ingredients shown under "Extra ingredients": the AI's own capped (max 3) suggestions, never re-derived by fuzzy-matching. */
+  readonly extraIngredients = computed(() => this.recipe()?.extraIngredients ?? []);
 
-    const entered = this.enteredIngredients();
-    if (!this.usesEnteredIngredients()) return recipe.extraIngredients;
-
-    const recipeExtras = recipe.ingredients.filter(
-      recipeIngredient =>
-        !entered.some(enteredIngredient =>
-          ingredientNamesMatch(recipeIngredient.name, enteredIngredient.name),
-        ),
-    );
-
-    return [...recipeExtras, ...recipe.extraIngredients];
+  /** Route to go back to: the page this recipe was opened from, not always Results. */
+  readonly backLink = computed(() => {
+    if (this.cameFrom === 'cuisine' && this.cameFromCuisine) return ['/cookbook', this.cameFromCuisine];
+    if (this.cameFrom === 'cookbook') return ['/cookbook'];
+    return ['/results'];
   });
 
-  /** Route to go back to. */
-  readonly backLink = computed(() => ['/results']);
-
-  /** Label for the back link. */
-  readonly backLabel = computed(() => 'Recipe results');
+  /** Label for the back link, matching backLink's destination. */
+  readonly backLabel = computed(() => {
+    if (this.cameFrom === 'cuisine' || this.cameFrom === 'cookbook') return 'Cookbook';
+    return 'Recipe results';
+  });
 
   /** Only shown when the AI hasn't already supplied an equivalent tag (e.g. "quick"). */
   readonly timeCategory = computed(() => {

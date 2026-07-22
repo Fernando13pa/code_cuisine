@@ -30,9 +30,9 @@ export class Preferences {
 
   readonly portions = signal(2);
   readonly cooks = signal(1);
-  readonly cookingTime = signal<CookingTime | null>(null);
-  readonly cuisine = signal<CuisineType | null>(null);
-  readonly diet = signal<DietType | null>(null);
+  readonly cookingTime = signal<CookingTime>('Quick');
+  readonly cuisine = signal<CuisineType>('German');
+  readonly diet = signal<DietType>('No preferences');
 
   /** Increases the portion count, capped at 12. */
   incrementPortions(): void {
@@ -54,19 +54,19 @@ export class Preferences {
     if (this.cooks() > 1) this.cooks.update(v => v - 1);
   }
 
-  /** Selects a cooking time, or clears it if it's already selected. */
+  /** Selects a cooking time; exactly one must always stay selected. */
   selectCookingTime(value: CookingTime): void {
-    this.cookingTime.set(this.cookingTime() === value ? null : value);
+    this.cookingTime.set(value);
   }
 
-  /** Selects a cuisine, or clears it if it's already selected. */
+  /** Selects a cuisine; exactly one must always stay selected. */
   selectCuisine(value: CuisineType): void {
-    this.cuisine.set(this.cuisine() === value ? null : value);
+    this.cuisine.set(value);
   }
 
-  /** Selects a diet, or clears it if it's already selected. */
+  /** Selects a diet; exactly one must always stay selected. */
   selectDiet(value: DietType): void {
-    this.diet.set(this.diet() === value ? null : value);
+    this.diet.set(value);
   }
 
   /** Saves the chosen preferences and navigates to the Loading step. */

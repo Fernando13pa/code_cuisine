@@ -87,7 +87,7 @@
               @for (ingredient of yourIngredients(); track ingredient.id) {
                 <li>
                   <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
-                  {{ formatIngredientName(ingredient) }}
+                  <span class="ingredients-columns__name">{{ formatIngredientName(ingredient) }}</span>
                 </li>
               }
             </ul>
@@ -100,7 +100,7 @@
                 @for (ingredient of extraIngredients(); track ingredient.id) {
                   <li>
                     <span class="ingredients-columns__amount">{{ formatIngredientAmount(ingredient) }}</span>
-                    {{ formatIngredientName(ingredient) }}
+                    <span class="ingredients-columns__name">{{ formatIngredientName(ingredient) }}</span>
                   </li>
                 }
               </ul>

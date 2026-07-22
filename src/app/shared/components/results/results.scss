@@ -105,6 +105,7 @@
 
 .recipe-card {
   display: flex;
+  min-width: 0;
   min-height: 18.5rem;
   flex-direction: column;
   align-items: flex-start;
@@ -129,6 +130,7 @@
     font-size: clamp(1.5rem, 1.143rem + 1.786vw, 2rem);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -154,6 +156,7 @@
   font-family: var(--font-family-accent);
   font-size: clamp(1rem, 0.821rem + 0.893vw, 1.25rem);
   font-weight: var(--font-weight-medium);
+  overflow-wrap: anywhere;
 }
 
 .recipe-card__view {
@@ -269,6 +272,10 @@
 }
 
 @media (max-width: 37.5rem) {
+  .results {
+    padding-inline: 0;
+  }
+
   .results-hero__visual {
     aspect-ratio: 340 / 131;
   }

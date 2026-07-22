@@ -28,7 +28,7 @@ const PAGE_SIZE = 15;
 export class CuisineRecipes {
   private readonly route = inject(ActivatedRoute);
   private readonly recipeService = inject(RecipeService);
-  private readonly slug = this.route.snapshot.paramMap.get('cuisine') ?? 'italian';
+  protected readonly slug = this.route.snapshot.paramMap.get('cuisine') ?? 'italian';
 
   protected readonly cuisine = CUISINES[this.slug] ?? CUISINES['italian'];
   protected readonly recipes = this.recipeService.getCookbookRecipes(this.slug);

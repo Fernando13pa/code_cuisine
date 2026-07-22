@@ -20,7 +20,7 @@
       @for (recipe of pagedRecipes(); track recipe.id; let index = $index) {
         <li class="cuisine-recipe" [class.cuisine-recipe--tinted]="index % 2 === 1">
           <span class="cuisine-recipe__number">{{ (currentPage() - 1) * 15 + index + 1 }}.</span>
-          <a class="cuisine-recipe__content" [routerLink]="['/recipe', recipe.id]">
+          <a class="cuisine-recipe__content" [routerLink]="['/recipe', recipe.id]" [queryParams]="{ from: 'cuisine', cuisine: slug }">
             <p class="cuisine-recipe__time">
               <img src="assets/icon-clock.svg" width="18" height="18" alt="" />
               Cooking time: {{ recipe.cookingTime }}min
@@ -35,7 +35,7 @@
               <img src="assets/icon-heart.svg" width="18" height="16" alt="" />{{ recipe.likes }}
             </span>
           </div>
-          <a class="cuisine-recipe__open" [routerLink]="['/recipe', recipe.id]" [attr.aria-label]="'Open ' + recipe.title">
+          <a class="cuisine-recipe__open" [routerLink]="['/recipe', recipe.id]" [queryParams]="{ from: 'cuisine', cuisine: slug }" [attr.aria-label]="'Open ' + recipe.title">
             <img src="assets/icon-arrow-right.svg" width="26" height="15" alt="" />
           </a>
         </li>

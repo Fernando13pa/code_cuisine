@@ -56,7 +56,7 @@
               <span>Cooking time: {{ recipe.cookingTime }}min</span>
             </p>
 
-            <a class="recipe-card__view" [routerLink]="['/recipe', recipe.id]">View</a>
+            <a class="recipe-card__view" [routerLink]="['/recipe', recipe.id]" [queryParams]="{ from: 'results' }">View</a>
           </article>
         }
       </div>
