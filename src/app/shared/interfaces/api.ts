@@ -14,6 +14,7 @@ export interface RecipeGenerationRequest {
   ingredients: string;
   portions: number;
   timeCategory: TimeCategory;
+  cuisine: CuisineType;
   diet: Diet;
   numberOfChefs: number;
 }

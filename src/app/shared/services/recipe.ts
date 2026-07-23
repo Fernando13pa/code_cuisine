@@ -306,6 +306,7 @@ export class RecipeService {
       ingredients: this.ingredients().map(i => i.name).join(', '),
       portions: prefs.portions,
       timeCategory: TIME_MAP[prefs.cookingTime ?? 'Quick'],
+      cuisine: prefs.cuisine ?? 'German',
       diet: DIET_MAP[prefs.diet ?? 'No preferences'],
       numberOfChefs: prefs.cooks,
     };
