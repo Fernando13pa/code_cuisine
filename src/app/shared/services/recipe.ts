@@ -10,12 +10,14 @@ import { COOKBOOK_RECIPES } from '../data/cookbook-recipes';
 import {
   ApiErrorResponse,
   Diet,
+  MealCategory,
   QuotaExceededResponse,
   RawIngredient,
   RawRecipe,
   RawRecipeStep,
   RecipeGenerationRequest,
   RecipeGenerationResponse,
+  ServingTemperatureCategory,
   TimeCategory,
 } from '../interfaces/api';
 
@@ -79,6 +81,17 @@ const DIET_MAP: Record<string, Diet> = {
   'No preferences': 'none',
 };
 
+const MEAL_MAP: Record<string, MealCategory> = {
+  Breakfast: 'breakfast',
+  Lunch: 'lunch',
+  Snack: 'snack',
+};
+
+const TEMPERATURE_MAP: Record<string, ServingTemperatureCategory> = {
+  Hot: 'hot',
+  Cold: 'cold',
+};
+
 // ---------------------------------------------------------------------------
 // Normalizers: raw n8n response → internal Recipe model
 // ---------------------------------------------------------------------------
@@ -111,6 +124,7 @@ function normalizeRecipe(raw: RawRecipe): Recipe {
     title: raw.title,
     cookingTime: raw.cookingTime,
     cuisine: raw.cuisine,
+    imageUrl: raw.imageUrl?.trim() || undefined,
     tags: raw.tags ?? [], likes: 0,
     missingIngredientsNote: raw.missingIngredientsNote,
     nutritionalInfo: raw.nutritionalInfo,
@@ -156,6 +170,8 @@ export class RecipeService {
     cookingTime: null,
     cuisine: null,
     diet: null,
+    meal: null,
+    temperature: null,
   });
   readonly results = signal<Recipe[]>([]);
   readonly cookbookRecipes = signal<Recipe[]>(this.buildInitialCookbookRecipes());
@@ -309,6 +325,8 @@ export class RecipeService {
       cuisine: prefs.cuisine ?? 'German',
       diet: DIET_MAP[prefs.diet ?? 'No preferences'],
       numberOfChefs: prefs.cooks,
+      meal: MEAL_MAP[prefs.meal ?? 'Breakfast'],
+      servingTemperature: TEMPERATURE_MAP[prefs.temperature ?? 'Hot'],
     };
   }
 }

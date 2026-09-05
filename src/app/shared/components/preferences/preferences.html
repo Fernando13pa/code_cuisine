@@ -74,6 +74,26 @@
 
       <div class="pref-group">
         <div class="pref-group__heading">
+          <img src="assets/icon-meal.svg" width="20" height="20" alt="" />
+          <span>Meal</span>
+        </div>
+        <div class="pref-group__chips" role="group" aria-label="Meal">
+          @for (m of meals; track m) {
+            <button
+              class="pref-chip"
+              type="button"
+              [class.pref-chip--active]="meal() === m"
+              (click)="selectMeal(m)"
+              [attr.aria-pressed]="meal() === m"
+            >
+              <span class="pref-chip__label">{{ m }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-group__heading">
           <img src="assets/icon-preference-clock.svg" width="20" height="20" alt="" />
           <span>Cooking time</span>
         </div>
@@ -88,6 +108,27 @@
             >
               <span class="pref-chip__label">{{ ct.label }}</span>
               <span class="pref-chip__hint">{{ ct.hint }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="pref-group">
+        <div class="pref-group__heading">
+          <img src="assets/icon-thermometer.svg" width="20" height="20" alt="" />
+          <span>Serving temperature</span>
+        </div>
+        <div class="pref-group__chips" role="group" aria-label="Serving temperature">
+          @for (t of temperatures; track t.value) {
+            <button
+              class="pref-chip pref-chip--time"
+              type="button"
+              [class.pref-chip--active]="temperature() === t.value"
+              (click)="selectTemperature(t.value)"
+              [attr.aria-pressed]="temperature() === t.value"
+            >
+              <span class="pref-chip__label">{{ t.label }}</span>
+              <span class="pref-chip__hint">{{ t.hint }}</span>
             </button>
           }
         </div>

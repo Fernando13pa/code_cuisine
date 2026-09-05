@@ -3,6 +3,8 @@ import { CuisineType } from './preferences';
 
 export type TimeCategory = 'quick' | 'medium' | 'elaborate';
 export type Diet = 'vegetarian' | 'vegan' | 'keto' | 'none';
+export type MealCategory = 'breakfast' | 'lunch' | 'snack';
+export type ServingTemperatureCategory = 'hot' | 'cold';
 
 /**
  * Body que Angular envía al webhook de n8n.
@@ -17,6 +19,10 @@ export interface RecipeGenerationRequest {
   cuisine: CuisineType;
   diet: Diet;
   numberOfChefs: number;
+  /** Mahlzeit, für die das Rezept gedacht ist. */
+  meal: MealCategory;
+  /** `cold` = ein Gericht, das gekocht und kalt serviert werden kann (kein Aufwärmen nötig). */
+  servingTemperature: ServingTemperatureCategory;
 }
 
 /** Zutat, wie n8n sie liefert: ohne eigene `id`. */
@@ -50,6 +56,8 @@ export interface RawRecipe {
   ingredients: RawIngredient[];
   extraIngredients: RawIngredient[];
   steps: RawRecipeStep[];
+  /** Optionale Bild-URL für das Gericht, von n8n erzeugt. Fehlt, wenn der Workflow (noch) keins liefert. */
+  imageUrl?: string;
 }
 
 /** Respuesta exitosa de n8n: siempre exactamente 3 recetas, envueltas en `output`. */

@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { RecipeService } from '../../services/recipe';
@@ -11,6 +11,19 @@ import { RecipeService } from '../../services/recipe';
 })
 export class Results {
   protected readonly recipeService = inject(RecipeService);
+
+  /** Recipe ids whose AI image failed to load — their card falls back to the text-only layout. */
+  private readonly brokenImages = signal(new Set<string>());
+
+  /** True while a recipe has a usable image URL that hasn't errored out. */
+  protected showsImage(recipeId: string, imageUrl: string | undefined): boolean {
+    return !!imageUrl && !this.brokenImages().has(recipeId);
+  }
+
+  /** Drops a recipe's image after a load error so the card stays clean instead of showing a broken icon. */
+  protected onImageError(recipeId: string): void {
+    this.brokenImages.update(ids => new Set(ids).add(recipeId));
+  }
 
   /** The selected cuisine, falling back to the first generated recipe's cuisine. */
   protected readonly cuisineLabel = computed(

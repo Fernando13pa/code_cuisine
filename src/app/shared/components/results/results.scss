@@ -132,6 +132,22 @@
     line-height: 1;
     overflow-wrap: anywhere;
   }
+
+  // With an image the title sits closer to it; the "Recipe N" label already adds spacing.
+  &--has-image h2 {
+    margin-top: var(--space-3);
+  }
+}
+
+// Full-bleed dish preview: cancels the card padding so it meets the rounded card edges.
+.recipe-card__image {
+  align-self: stretch;
+  margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-6)) var(--space-4);
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  // Shown while the lazy image is still loading, so the card doesn't jump.
+  background: var(--color-sage-100);
 }
 
 .recipe-card__label,

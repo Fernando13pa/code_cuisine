@@ -30,6 +30,8 @@ export interface Recipe {
   /** Freitext von der KI, z. B. "Mediterranean" oder "Comfort Food" — nicht auf die Preferences-Chips beschränkt. */
   cuisine: string;
   tags: string[];
+  /** Von n8n erzeugte Bild-URL des Gerichts. Optional: nur die generierten Rezepte auf der Results-Seite nutzen sie. */
+  imageUrl?: string;
   /** Wird nicht von n8n geliefert, sondern lokal/Firebase verwaltet (Favoriten). */
   likes: number;
   /** Hinweistext von der KI, falls Zutaten im Rezept fehlen. Leerstring, wenn keine fehlen. */

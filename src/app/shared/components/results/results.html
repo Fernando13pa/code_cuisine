@@ -43,7 +43,18 @@
 
       <div class="results__grid">
         @for (recipe of recipeService.results(); track recipe.id; let index = $index) {
-          <article class="recipe-card">
+          <article class="recipe-card" [class.recipe-card--has-image]="showsImage(recipe.id, recipe.imageUrl)">
+            @if (showsImage(recipe.id, recipe.imageUrl)) {
+              <img
+                class="recipe-card__image"
+                [src]="recipe.imageUrl"
+                [alt]="'A serving suggestion for ' + recipe.title"
+                loading="lazy"
+                decoding="async"
+                (error)="onImageError(recipe.id)"
+              />
+            }
+
             <div class="recipe-card__label">
               <img src="assets/icon-cuisine.svg" width="20" height="20" alt="" />
               <span>Recipe {{ index + 1 }}</span>

@@ -1,6 +1,5 @@
 export const environment = {
   production: false,
-  // n8n Cloud (14-Tage-Testversion): Workflow ist published, daher die
-  // Production-Webhook-URL (ohne "-test", kein manuelles "Listen" nötig).
-  n8nWebhookUrl: 'https://fernando13cb.app.n8n.cloud/webhook/generate_recipe',
+  // n8n self-hosted (Homelab, HP Mini MTX via Cloudflare Tunnel).
+  n8nWebhookUrl: 'https://n8n.fernando-lab.de/webhook/generate_recipe',
 };

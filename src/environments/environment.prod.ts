@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  n8nWebhookUrl: 'https://fernando13cb.app.n8n.cloud/webhook/generate_recipe',
+  n8nWebhookUrl: 'https://n8n.fernando-lab.de/webhook/generate_recipe',
 };

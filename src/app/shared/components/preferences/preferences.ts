@@ -1,7 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { CookingTime, CuisineType, DietType } from '../../interfaces/preferences';
+import {
+  CookingTime,
+  CuisineType,
+  DietType,
+  MealType,
+  ServingTemperature,
+} from '../../interfaces/preferences';
 import { RecipeService } from '../../services/recipe';
 
 @Component({
@@ -28,11 +34,22 @@ export class Preferences {
     'Vegetarian', 'Vegan', 'Keto', 'No preferences',
   ];
 
+  readonly meals: MealType[] = [
+    'Breakfast', 'Lunch', 'Snack',
+  ];
+
+  readonly temperatures: { value: ServingTemperature; label: string; hint: string }[] = [
+    { value: 'Hot', label: 'Hot', hint: 'served warm' },
+    { value: 'Cold', label: 'Cold', hint: 'cook & serve cold' },
+  ];
+
   readonly portions = signal(2);
   readonly cooks = signal(1);
   readonly cookingTime = signal<CookingTime>('Quick');
   readonly cuisine = signal<CuisineType>('German');
   readonly diet = signal<DietType>('No preferences');
+  readonly meal = signal<MealType>('Breakfast');
+  readonly temperature = signal<ServingTemperature>('Hot');
 
   /** Increases the portion count, capped at 12. */
   incrementPortions(): void {
@@ -69,6 +86,16 @@ export class Preferences {
     this.diet.set(value);
   }
 
+  /** Selects the meal this recipe is for; exactly one must always stay selected. */
+  selectMeal(value: MealType): void {
+    this.meal.set(value);
+  }
+
+  /** Selects the serving temperature; exactly one must always stay selected. */
+  selectTemperature(value: ServingTemperature): void {
+    this.temperature.set(value);
+  }
+
   /** Saves the chosen preferences and navigates to the Loading step. */
   generate(): void {
     this.recipeService.setPreferences({
@@ -77,6 +104,8 @@ export class Preferences {
       cookingTime: this.cookingTime(),
       cuisine: this.cuisine(),
       diet: this.diet(),
+      meal: this.meal(),
+      temperature: this.temperature(),
     });
     this.router.navigate(['/loading']);
   }
