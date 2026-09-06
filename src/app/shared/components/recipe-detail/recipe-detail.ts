@@ -37,27 +37,8 @@ export class RecipeDetail {
     () => this.recipeService.getRecipeById(this.recipeId),
   );
 
-  /** Ingredients the user actually entered on the Generate page. */
-  private readonly enteredIngredients = computed(() =>
-    this.recipeService.ingredients().filter(
-      ingredient =>
-        ingredient.name.trim().length > 0
-        && Number.isFinite(ingredient.amount)
-        && ingredient.amount > 0,
-    ),
-  );
-
-  /** True when this detail page can use the user's Generate-page ingredient list. */
-  readonly usesEnteredIngredients = computed(() => this.enteredIngredients().length > 0);
-
-  /** Ingredients shown under "Your ingredients". */
-  readonly yourIngredients = computed(() => {
-    const recipe = this.recipe();
-    if (!recipe) return [];
-
-    const entered = this.enteredIngredients();
-    return this.usesEnteredIngredients() ? entered : recipe.ingredients;
-  });
+  /** Ingredients shown under "Your ingredients": the ones this recipe needs from the user's pantry, at the amounts the recipe calls for — not the raw Generate-page input. */
+  readonly yourIngredients = computed(() => this.recipe()?.ingredients ?? []);
 
   /** Ingredients shown under "Extra ingredients": the AI's own capped (max 3) suggestions, never re-derived by fuzzy-matching. */
   readonly extraIngredients = computed(() => this.recipe()?.extraIngredients ?? []);

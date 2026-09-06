@@ -108,7 +108,7 @@
           }
         </div>
 
-        @if (r.missingIngredientsNote && (!usesEnteredIngredients() || r.extraIngredients.length > 0)) {
+        @if (r.missingIngredientsNote && r.extraIngredients.length > 0) {
           <p class="recipe-detail__missing-note">{{ r.missingIngredientsNote }}</p>
         }
       </div>
